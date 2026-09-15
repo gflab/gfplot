@@ -15,7 +15,11 @@ test_that("plot_KMCurve can build the risk table layout", {
   keep <- stats::complete.cases(lung[, c("time", "status", "sex")])
   clinical <- survival::Surv(lung$time[keep], lung$status[keep] == 2)
 
-  plot <- plot_KMCurve(clinical, factor(lung$sex[keep]), risk.table = TRUE)
+  # survminer's risk table reports "Ignoring unknown labels" under ggplot2 4.0.
+  # The figure and its table are unaffected, so the message is tolerated here.
+  plot <- suppressWarnings(
+    plot_KMCurve(clinical, factor(lung$sex[keep]), risk.table = TRUE)
+  )
   expect_s3_class(plot, "ggplot")
 })
 
