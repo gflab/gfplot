@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/gflab/gfplot/blob/v0.2.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/gflab/gfplot/blob/master/DESCRIPTION)
 
 Gao F (2026). *gfplot: Publication-Ready Figures for Cancer
 Bioinformatics*. R package version 0.2.0,
