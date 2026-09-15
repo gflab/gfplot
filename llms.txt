@@ -47,12 +47,12 @@ plot_ROC(
 
 | Area | Functions |
 |----|----|
-| Survival | [`plot_KMCurve()`](https://gaofeng21cn.github.io/gfplot/reference/plot_KMCurve.md), [`generate_time_event()`](https://gaofeng21cn.github.io/gfplot/reference/generate_time_event.md) |
-| Discrimination | [`plot_ROC()`](https://gaofeng21cn.github.io/gfplot/reference/plot_ROC.md), [`plot_TimeROC()`](https://gaofeng21cn.github.io/gfplot/reference/plot_TimeROC.md), [`plot_MulROC()`](https://gaofeng21cn.github.io/gfplot/reference/plot_MulROC.md) |
-| Sample-level figures | [`plot_RiskScore()`](https://gaofeng21cn.github.io/gfplot/reference/plot_RiskScore.md), [`plot_Boxplot()`](https://gaofeng21cn.github.io/gfplot/reference/plot_Boxplot.md), [`plot_barplot()`](https://gaofeng21cn.github.io/gfplot/reference/plot_barplot.md), [`plot_cor()`](https://gaofeng21cn.github.io/gfplot/reference/plot_cor.md) |
-| Projections and models | [`plot_PCA()`](https://gaofeng21cn.github.io/gfplot/reference/plot_PCA.md), [`plot_UMAP()`](https://gaofeng21cn.github.io/gfplot/reference/plot_UMAP.md), [`plot_lasso()`](https://gaofeng21cn.github.io/gfplot/reference/plot_lasso.md) |
-| Enrichment and immune figures | [`plot_GO()`](https://gaofeng21cn.github.io/gfplot/reference/plot_GO.md), [`viewGSEA()`](https://gaofeng21cn.github.io/gfplot/reference/viewGSEA.md), [`ggGSEA()`](https://gaofeng21cn.github.io/gfplot/reference/ggGSEA.md), [`plot_immune()`](https://gaofeng21cn.github.io/gfplot/reference/plot_immune.md) |
-| Helpers | [`get_color()`](https://gaofeng21cn.github.io/gfplot/reference/get_color.md) |
+| Survival | [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md), [`generate_time_event()`](https://gflab.github.io/gfplot/reference/generate_time_event.md) |
+| Discrimination | [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md), [`plot_TimeROC()`](https://gflab.github.io/gfplot/reference/plot_TimeROC.md), [`plot_MulROC()`](https://gflab.github.io/gfplot/reference/plot_MulROC.md) |
+| Sample-level figures | [`plot_RiskScore()`](https://gflab.github.io/gfplot/reference/plot_RiskScore.md), [`plot_Boxplot()`](https://gflab.github.io/gfplot/reference/plot_Boxplot.md), [`plot_barplot()`](https://gflab.github.io/gfplot/reference/plot_barplot.md), [`plot_cor()`](https://gflab.github.io/gfplot/reference/plot_cor.md) |
+| Projections and models | [`plot_PCA()`](https://gflab.github.io/gfplot/reference/plot_PCA.md), [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md), [`plot_lasso()`](https://gflab.github.io/gfplot/reference/plot_lasso.md) |
+| Enrichment and immune figures | [`plot_GO()`](https://gflab.github.io/gfplot/reference/plot_GO.md), [`viewGSEA()`](https://gflab.github.io/gfplot/reference/viewGSEA.md), [`ggGSEA()`](https://gflab.github.io/gfplot/reference/ggGSEA.md), [`plot_immune()`](https://gflab.github.io/gfplot/reference/plot_immune.md) |
+| Helpers | [`get_color()`](https://gflab.github.io/gfplot/reference/get_color.md) |
 
 Every function returns a `ggplot` object, so figures can be modified
 with the usual `ggplot2` grammar.
@@ -65,13 +65,13 @@ Some functions build on specialised packages. They are declared in
 
 | Function | Back end |
 |----|----|
-| [`plot_KMCurve()`](https://gaofeng21cn.github.io/gfplot/reference/plot_KMCurve.md) | `survminer` |
-| [`plot_TimeROC()`](https://gaofeng21cn.github.io/gfplot/reference/plot_TimeROC.md) | `survivalROC` (or `timeROC` for new work) |
-| [`plot_UMAP()`](https://gaofeng21cn.github.io/gfplot/reference/plot_UMAP.md) | `umap` |
-| [`plot_lasso()`](https://gaofeng21cn.github.io/gfplot/reference/plot_lasso.md) | `glmnet` |
-| [`plot_immune()`](https://gaofeng21cn.github.io/gfplot/reference/plot_immune.md) | `ggradar` |
-| [`viewGSEA()`](https://gaofeng21cn.github.io/gfplot/reference/viewGSEA.md), [`ggGSEA()`](https://gaofeng21cn.github.io/gfplot/reference/ggGSEA.md) | `DOSE`, `HTSanalyzeR2`, `fgsea` |
-| [`plot_barplot()`](https://gaofeng21cn.github.io/gfplot/reference/plot_barplot.md) significance | `ggpubr` |
+| [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md) | `survminer` |
+| [`plot_TimeROC()`](https://gflab.github.io/gfplot/reference/plot_TimeROC.md) | `survivalROC` (or `timeROC` for new work) |
+| [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md) | `umap` |
+| [`plot_lasso()`](https://gflab.github.io/gfplot/reference/plot_lasso.md) | `glmnet` |
+| [`plot_immune()`](https://gflab.github.io/gfplot/reference/plot_immune.md) | `ggradar` |
+| [`viewGSEA()`](https://gflab.github.io/gfplot/reference/viewGSEA.md), [`ggGSEA()`](https://gflab.github.io/gfplot/reference/ggGSEA.md) | `DOSE`, `HTSanalyzeR2`, `fgsea` |
+| [`plot_barplot()`](https://gflab.github.io/gfplot/reference/plot_barplot.md) significance | `ggpubr` |
 
 ## Fonts
 
@@ -86,7 +86,7 @@ extrafont::font_import()   # once per machine
 gfplot_font_setup()        # registers Arial with the graphics devices
 ```
 
-[`gfplot_font_setup()`](https://gaofeng21cn.github.io/gfplot/reference/gfplot_font_setup.md)
+[`gfplot_font_setup()`](https://gflab.github.io/gfplot/reference/gfplot_font_setup.md)
 reports whether Arial is then available. Every plotting function takes
 `font`, so a different family can be used for a specific figure; the
 value is passed to the device unchanged.
@@ -129,55 +129,55 @@ GitHub Issues.
 
 ## Survival figures
 
-- [`plot_KMCurve()`](https://gaofeng21cn.github.io/gfplot/reference/plot_KMCurve.md)
+- [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md)
   : Plot a Kaplan-Meier curve with risk table and hazard ratio
-- [`generate_time_event()`](https://gaofeng21cn.github.io/gfplot/reference/generate_time_event.md)
+- [`generate_time_event()`](https://gflab.github.io/gfplot/reference/generate_time_event.md)
   : Build event indicators for one or more follow-up limits
 
 ## Discrimination figures
 
-- [`plot_ROC()`](https://gaofeng21cn.github.io/gfplot/reference/plot_ROC.md)
-  : Plot ROC curves for one or more markers
-- [`plot_TimeROC()`](https://gaofeng21cn.github.io/gfplot/reference/plot_TimeROC.md)
+- [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md) :
+  Plot ROC curves for one or more markers
+- [`plot_TimeROC()`](https://gflab.github.io/gfplot/reference/plot_TimeROC.md)
   : Plot time-dependent ROC curves
-- [`plot_MulROC()`](https://gaofeng21cn.github.io/gfplot/reference/plot_MulROC.md)
+- [`plot_MulROC()`](https://gflab.github.io/gfplot/reference/plot_MulROC.md)
   : Plot several ROC curves from separate datasets
 
 ## Sample-level figures
 
-- [`plot_RiskScore()`](https://gaofeng21cn.github.io/gfplot/reference/plot_RiskScore.md)
+- [`plot_RiskScore()`](https://gflab.github.io/gfplot/reference/plot_RiskScore.md)
   : Plot a risk score ordered by patient
-- [`plot_Boxplot()`](https://gaofeng21cn.github.io/gfplot/reference/plot_Boxplot.md)
+- [`plot_Boxplot()`](https://gflab.github.io/gfplot/reference/plot_Boxplot.md)
   : Boxplot with optional pairwise significance annotations
-- [`plot_barplot()`](https://gaofeng21cn.github.io/gfplot/reference/plot_barplot.md)
+- [`plot_barplot()`](https://gflab.github.io/gfplot/reference/plot_barplot.md)
   : Grouped bar plot with optional significance annotations
-- [`plot_cor()`](https://gaofeng21cn.github.io/gfplot/reference/plot_cor.md)
-  : Plot the correlation between two variables
+- [`plot_cor()`](https://gflab.github.io/gfplot/reference/plot_cor.md) :
+  Plot the correlation between two variables
 
 ## Projections and models
 
-- [`plot_PCA()`](https://gaofeng21cn.github.io/gfplot/reference/plot_PCA.md)
-  : Principal component analysis plot
-- [`plot_UMAP()`](https://gaofeng21cn.github.io/gfplot/reference/plot_UMAP.md)
+- [`plot_PCA()`](https://gflab.github.io/gfplot/reference/plot_PCA.md) :
+  Principal component analysis plot
+- [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md)
   : UMAP projection plot
-- [`plot_lasso()`](https://gaofeng21cn.github.io/gfplot/reference/plot_lasso.md)
+- [`plot_lasso()`](https://gflab.github.io/gfplot/reference/plot_lasso.md)
   : Plot lasso coefficient paths
 
 ## Enrichment and immune figures
 
-- [`plot_GO()`](https://gaofeng21cn.github.io/gfplot/reference/plot_GO.md)
-  : Dot plot of enriched terms
-- [`viewGSEA()`](https://gaofeng21cn.github.io/gfplot/reference/viewGSEA.md)
-  : Plot a running enrichment score for an HTSanalyzeR2 result
-- [`ggGSEA()`](https://gaofeng21cn.github.io/gfplot/reference/ggGSEA.md)
-  : Plot a running enrichment score for a ranked gene list
-- [`plot_immune()`](https://gaofeng21cn.github.io/gfplot/reference/plot_immune.md)
+- [`plot_GO()`](https://gflab.github.io/gfplot/reference/plot_GO.md) :
+  Dot plot of enriched terms
+- [`viewGSEA()`](https://gflab.github.io/gfplot/reference/viewGSEA.md) :
+  Plot a running enrichment score for an HTSanalyzeR2 result
+- [`ggGSEA()`](https://gflab.github.io/gfplot/reference/ggGSEA.md) :
+  Plot a running enrichment score for a ranked gene list
+- [`plot_immune()`](https://gflab.github.io/gfplot/reference/plot_immune.md)
   : Radar chart of immune-cell infiltration by group
 
 ## Helpers
 
-- [`get_color()`](https://gaofeng21cn.github.io/gfplot/reference/get_color.md)
+- [`get_color()`](https://gflab.github.io/gfplot/reference/get_color.md)
   : Colour palettes used by the plotting functions
-- [`gfplot_font_setup()`](https://gaofeng21cn.github.io/gfplot/reference/gfplot_font_setup.md)
+- [`gfplot_font_setup()`](https://gflab.github.io/gfplot/reference/gfplot_font_setup.md)
   : Prepare the Arial font family for figure output
 

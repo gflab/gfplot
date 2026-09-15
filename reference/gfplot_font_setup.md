@@ -29,7 +29,7 @@ function, to add system fonts to the `extrafont` database.
 
 ## See also
 
-[`plot_KMCurve()`](https://gaofeng21cn.github.io/gfplot/reference/plot_KMCurve.md)
+[`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md)
 for the `font` argument.
 
 ## Examples

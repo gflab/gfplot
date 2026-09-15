@@ -18,7 +18,7 @@ Useful links:
 
 - <https://github.com/gflab/gfplot>
 
-- <https://gaofeng21cn.github.io/gfplot/>
+- <https://gflab.github.io/gfplot/>
 
 - Report bugs at <https://github.com/gflab/gfplot/issues>
 

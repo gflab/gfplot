@@ -30,7 +30,7 @@ plot_PCA(
 - palette:
 
   Palette name passed to
-  [`get_color()`](https://gaofeng21cn.github.io/gfplot/reference/get_color.md).
+  [`get_color()`](https://gflab.github.io/gfplot/reference/get_color.md).
 
 ## Value
 
