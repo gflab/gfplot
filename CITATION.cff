@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software in published work, please cite it as below."
+authors:
+  - family-names: Gao
+    given-names: Feng
+title: "gfplot: Publication-Ready Figures for Cancer Bioinformatics"
+version: 0.2.0
+date-released: "2026-09-16"
+license: MIT
+repository-code: "https://github.com/gflab/gfplot"

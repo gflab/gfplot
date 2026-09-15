@@ -2,24 +2,48 @@
 % Please edit documentation in R/plot_ROC.R
 \name{plot_ROC}
 \alias{plot_ROC}
-\title{Plot ROC curve}
+\title{Plot ROC curves for one or more markers}
 \usage{
-plot_ROC(scores, labels, force05 = F, palette = "jama",
-  legend.pos = c(0.2, 0.15), title = NULL, font = "Arial",
-  percent.style = F)
+plot_ROC(
+  scores,
+  labels,
+  force05 = FALSE,
+  palette = "jama",
+  legend.pos = c(0.2, 0.15),
+  title = NULL,
+  font = "Arial",
+  percent.style = FALSE
+)
+}
+\arguments{
+\item{scores}{Numeric vector, or a matrix or data frame with one column per
+marker.}
+
+\item{labels}{Binary outcome, one value per observation.}
+
+\item{force05}{Flip markers whose area under the curve is below 0.5 so that
+every curve is plotted above the diagonal.}
+
+\item{palette}{Palette name passed to \code{\link[=get_color]{get_color()}}.}
+
+\item{legend.pos}{Legend position as an x/y coordinate pair.}
+
+\item{title}{Plot title.}
+
+\item{font}{Font family used in the plot.}
+
+\item{percent.style}{Label the axes as percentages.}
 }
 \value{
-a ggplot2 object of the plot
+A \code{ggplot} object.
 }
 \description{
-This function plots ROC curve for survival analysis.
+Plots receiver operating characteristic curves with the area under the
+curve and its confidence interval in the legend.
 }
 \examples{
-library(gfplot)
-library(survminer)
-data(myeloma)
-extrafont::loadfonts()
-plot_ROC(myeloma$CCND1, myeloma$event)
-plot_ROC(myeloma[, 7:10], myeloma$event)
-
+set.seed(1)
+scores <- cbind(marker1 = rnorm(80), marker2 = rnorm(80))
+labels <- rep(c(0, 1), each = 40)
+p <- plot_ROC(scores, labels)
 }

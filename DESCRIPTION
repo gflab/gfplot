@@ -1,19 +1,54 @@
 Package: gfplot
 Type: Package
-Title: Personal plot functions from Feng
-Version: 0.1.0
-Author: Feng GAO
-Maintainer: Feng GAO <gaofeng21cn@gmail.com>
-Description: Some useful function to generate publication ready level figures
-License: MIT
+Title: Publication-Ready Figures for Cancer Bioinformatics
+Version: 0.2.0
+Authors@R: person("Feng", "Gao", email = "gaofeng21cn@gmail.com",
+    role = c("aut", "cre"))
+Description: A compact plotting toolkit for cancer bioinformatics figures.
+    Provides publication-ready Kaplan-Meier curves with hazard ratios, ROC
+    and time-dependent ROC curves, multiple-ROC comparisons, risk-score
+    distributions, PCA and UMAP projections, boxplots and correlation plots,
+    lasso coefficient paths, enrichment plots, and immune-infiltration
+    radar charts. Palette helpers return colour-blind-friendly colours in
+    journal styles.
+License: MIT + file LICENSE
+URL: https://github.com/gflab/gfplot, https://gaofeng21cn.github.io/gfplot/
+BugReports: https://github.com/gflab/gfplot/issues
 Encoding: UTF-8
-LazyData: true
-biocViews:
-Imports: ggplot2, ggsci, ggfortify, ggrepel, scales, dplyr, Hmisc, RColorBrewer, precrec, umap, reshape, fgsea, survcomp, glmnet
-Depends:
-    cowplot
-Remotes: 
-  github::ricardo-bion/ggradar
-Suggests: 
-    testthat
-RoxygenNote: 6.1.1
+Imports:
+    cowplot,
+    ggsci,
+    ggplot2,
+    ggrepel,
+    Hmisc,
+    pROC,
+    precrec,
+    RColorBrewer,
+    rlang,
+    scales,
+    survival,
+    survminer,
+    tidyr
+Suggests:
+    extrafont,
+    fgsea,
+    ggpubr,
+    ggsignif,
+    grid,
+    glmnet,
+    ggradar,
+    HTSanalyzeR2,
+    knitr,
+    rmarkdown,
+    survivalROC,
+    testthat (>= 3.0.0),
+    timeROC,
+    umap,
+    withr
+Enhances:
+    DOSE
+Remotes:
+    ricardo-bion/ggradar
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.0

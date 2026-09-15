@@ -1,124 +1,180 @@
-#' Plot Kaplan-Meier Curve
+#' Plot a Kaplan-Meier curve with risk table and hazard ratio
 #'
-#' This function plots Kaplan-Meier Curve for survival analysis.
+#' Draws survival curves for two or more groups, with an optional number-at-
+#' risk table, the log-rank p-value, and, for two groups, the hazard ratio
+#' from a univariable Cox model.
 #'
-#' @param clinical a survival object created by Surv function in survival package
-#' @param labels a vector containing subtyping labels of patients
-#' @param limit a numeric indicating the time limit of this KM plot
-#' @param annot a character indicating the annotation showed up in the plot
-#' @param color a vector containing colors used for different subtypes
-#' @param font a character indicating the font used in the plot (default: "Arial")
-#' @param xlab a character indicating the label of x-axis (default: "Follow up")
-#' @param ylab a character indicating the label of y-axis (default: "Survival Probability")
-#' @param title a character indicating the title (default: NULL)
-#' @param lenged.pos a character indicating whether the legend is (default: "top")
-#' @param palette color paletter (default: "jama_classic")
-#' @param risk.table a logical indicating whether show risk table or not (default: TRUE)
-#' @param risk.table.ratio a numeric indicating the relative size of risk table (default: 0.4)
-#' @param anno.pos position of annotation (default: "bottom")
-#' @param anno.x.shift relative position of annotation in x-axis (default: 0.5)
-#' @return a ggplot2 object of the plot
-#' @import ggplot2 cowplot
+#' @param clinical A survival object created by [survival::Surv()].
+#' @param labels A vector of group labels, one per patient.
+#' @param limit Optional follow-up limit; later observations are censored at
+#'   the limit.
+#' @param annot Optional extra annotation added to the plot.
+#' @param color Optional vector of colours. A named vector also sets the group
+#'   order.
+#' @param font Font family used in the plot.
+#' @param xlab,ylab,title Axis and plot labels.
+#' @param legend.pos Legend position.
+#' @param palette Palette name passed to [get_color()].
+#' @param risk.table Draw the number-at-risk table.
+#' @param risk.table.ratio Relative height of the risk table.
+#' @param anno.pos Either `"bottom"` or `"top"`; where the annotations are
+#'   placed.
+#' @param anno.x.shift Horizontal position of the annotations when
+#'   `anno.pos = "top"`.
+#'
+#' @return A `ggplot` object, or a `cowplot` grid when `risk.table = TRUE`.
 #' @export
 #' @examples
-#'
-#'  library(survival)
-#'  library(survminer)
-#'  extrafont::loadfonts()
-#'  data(myeloma)
-#'  clin <- Surv(myeloma$time, myeloma$event)
-#'  labs <- factor(myeloma$molecular_group)
-#'  plot_KMCurve(clin, labs)
+#' library(survival)
+#' fit_data <- survival::lung
+#' p <- plot_KMCurve(
+#'   Surv(fit_data$time, fit_data$status == 2),
+#'   factor(fit_data$sex),
+#'   risk.table = FALSE
+#' )
+plot_KMCurve <- function(clinical, labels, limit = NULL, annot = NULL,
+                         color = NULL, font = "Arial", xlab = "Follow up",
+                         ylab = "Survival Probability", title = NULL,
+                         legend.pos = "top", palette = "jama_classic",
+                         risk.table = TRUE, risk.table.ratio = 0.4,
+                         anno.pos = "bottom", anno.x.shift = 0.5) {
+  gfplot_require("survminer")
 
-plot_KMCurve <- function (clinical, labels, limit = NULL, annot = NULL, color = NULL,
-                          font = "Arial", xlab = "Follow up", ylab = "Survival Probability",
-                          title = NULL, legend.pos = "top", palette = "jama_classic",
-                          risk.table = T, risk.table.ratio = 0.4, anno.pos = "bottom",
-                          anno.x.shift = 0.5)
-{
   time <- clinical[, 1]
   event <- clinical[, 2] == 1
   if (!is.null(limit)) {
-    event[time > limit] <- F
+    event[time > limit] <- FALSE
     time[time > limit] <- limit
   }
   df <- data.frame(futime = time, fustat = event, group = labels)
-  surv <- survival::survfit(survival::Surv(futime, fustat) ~
-                              group, data = df)
-  survstats <- survival::survdiff(survival::Surv(futime, fustat) ~
-                                    group, data = df)
-  survstats$p.value <- 1 - pchisq(survstats$chisq, length(survstats$n) -
-                                    1)
+  surv <- survival::survfit(survival::Surv(futime, fustat) ~ group, data = df)
+  survstats <- survival::survdiff(
+    survival::Surv(futime, fustat) ~ group,
+    data = df
+  )
+  survstats$p.value <- 1 - stats::pchisq(
+    survstats$chisq,
+    length(survstats$n) - 1
+  )
+
+  complete <- !(is.na(time) | is.na(event))
   if (!is.null(color)) {
     if (!is.null(names(color))) {
       labels <- factor(labels, levels = names(color))
     }
+  } else {
+    color <- get_color(palette, n = length(unique(labels[complete])))
   }
-  else {
-    color <- get_color(palette, n = length(unique(labels)))
-  }
-  if (class(labels) == "factor") {
-    legend.labs <- na.omit(levels(droplevels(labels[!(is.na(time) |
-                                                        is.na(event))])))
-  }
-  else if (class(labels) == "logical") {
-    labels <- factor(labels, levels = c(F, T))
-    legend.labs <- na.omit(levels(droplevels(labels)))
-  }
-  else {
-    legend.labs <- na.omit(unique(labels))
+
+  if (is.factor(labels)) {
+    legend.labs <- as.character(stats::na.omit(levels(droplevels(labels[complete]))))
+  } else if (is.logical(labels)) {
+    labels <- factor(labels, levels = c(FALSE, TRUE))
+    legend.labs <- as.character(stats::na.omit(levels(droplevels(labels))))
+  } else {
+    legend.labs <- as.character(stats::na.omit(unique(labels[complete])))
     labels <- factor(labels, levels = legend.labs)
   }
-  fancy_scientific <- function(l, dig = 3) {
-    l <- format(l, digits = dig, scientific = TRUE)
-    l <- gsub("^(.*)e", "'\\1'e", l)
-    l <- gsub("e", "%*%10^", l)
-    parse(text = l)
-  }
-  p <- survminer::ggsurvplot(surv, data = df, xlab = xlab,
-                             ylab = ylab, palette = color, legend = legend.pos, legend.labs = legend.labs,
-                             risk.table = risk.table, risk.table.title = element_blank(),
-                             risk.table.y.text = FALSE, ggtheme =cowplot::theme_cowplot())
-  p$plot <- p$plot + ggtitle(title) +
-    theme(plot.title = element_text(hjust = 0.5),
-          text = element_text(family = font),
-          title = element_text(family = font),
-          axis.text.x = element_text(family = font),
-          legend.title = element_blank())
-  anno.text <- ifelse(survstats$p.value == 0, "italic(P)<1%*%10^{-22}",
-                      paste0("italic(P)==", fancy_scientific(survstats$p.value,
-                                                             3)))
+
+  p <- survminer::ggsurvplot(
+    surv,
+    data = df,
+    xlab = xlab,
+    ylab = ylab,
+    palette = color,
+    legend = legend.pos,
+    legend.labs = legend.labs,
+    risk.table = risk.table,
+    risk.table.y.text = FALSE,
+    ggtheme = cowplot::theme_cowplot()
+  )
+  p$plot <- p$plot + ggplot2::ggtitle(title) +
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(hjust = 0.5),
+      text = ggplot2::element_text(family = font),
+      title = ggplot2::element_text(family = font),
+      axis.text.x = ggplot2::element_text(family = font),
+      legend.title = ggplot2::element_blank()
+    )
+
+  anno.text <- ifelse(
+    survstats$p.value == 0,
+    "italic(P)<1%*%10^{-22}",
+    paste0(
+      "italic(P)==",
+      gfplot_scientific_label(survstats$p.value, 3)
+    )
+  )
   anno.y.shift <- 0
   if (length(legend.labs) == 2) {
-    hr <- survcomp::hazard.ratio(labels[!(is.na(time) | is.na(event))],
-                                 time[!(is.na(time) | is.na(event))], event[!(is.na(time) |
-                                                                                is.na(event))])
-    anno.text <- c(anno.text, sprintf("HR == %3.2f~(%3.2f - %3.2f)",
-                                      hr$hazard.ratio, hr$lower, hr$upper))
+    hr <- cox_hazard_ratio(
+      labels[complete],
+      time[complete],
+      event[complete]
+    )
+    anno.text <- c(
+      anno.text,
+      sprintf("HR == %3.2f~(%3.2f - %3.2f)", hr[1], hr[2], hr[3])
+    )
     anno.y.shift <- c(anno.y.shift + 0.15, 0)
   }
   if (!is.null(annot)) {
     anno.text <- c(anno.text, annot)
     anno.y.shift <- c(anno.y.shift + 0.15, 0)
   }
-  if (anno.pos == "bottom") {
-    p$plot <- p$plot + annotate("text", family = font, x = 0,
-                                y = anno.y.shift, label = anno.text, hjust = 0, vjust = 0,
-                                parse = TRUE)
+
+  if (identical(anno.pos, "bottom")) {
+    p$plot <- p$plot + ggplot2::annotate(
+      "text",
+      family = font,
+      x = 0,
+      y = anno.y.shift,
+      label = anno.text,
+      hjust = 0,
+      vjust = 0,
+      parse = TRUE
+    )
+  } else {
+    p$plot <- p$plot + ggplot2::annotate(
+      "text",
+      family = font,
+      x = anno.x.shift * max(time, na.rm = TRUE),
+      y = 0.85 + anno.y.shift,
+      label = anno.text,
+      hjust = 0,
+      vjust = 2,
+      parse = TRUE
+    )
   }
-  else {
-    p$plot <- p$plot + annotate("text", family = font, x = anno.x.shift *
-                                  max(time, na.rm = T), y = 0.85 + anno.y.shift, label = anno.text,
-                                hjust = 0, vjust = 2, parse = TRUE)
-  }
+
   if (risk.table) {
-    p$table <- p$table  +  theme(text = element_text(family = font),
-                                 title = element_text(family = font), axis.text = element_text(family = font),
-                                 axis.title.y = element_blank())
-    pp <- plot_grid(plotlist = list(p$plot + theme(axis.title.x = element_blank()),
-                                    p$table + labs(x = xlab)), labels = "", ncol = 1,
-                    align = "v", rel_heights = c(1, risk.table.ratio))
-    return(pp)
+    p$table <- p$table + ggplot2::theme(
+      text = ggplot2::element_text(family = font),
+      title = ggplot2::element_text(family = font),
+      axis.text = ggplot2::element_text(family = font),
+      axis.title.y = ggplot2::element_blank()
+    )
+    return(cowplot::plot_grid(
+      plotlist = list(
+        p$plot + ggplot2::theme(axis.title.x = ggplot2::element_blank()),
+        p$table + ggplot2::labs(x = xlab)
+      ),
+      labels = "",
+      ncol = 1,
+      align = "v",
+      rel_heights = c(1, risk.table.ratio)
+    ))
   }
-  else return(p$plot)
+  p$plot
+}
+
+# Hazard ratio, lower, and upper confidence limit for a two-group comparison.
+# Replaces the previous survcomp::hazard.ratio() call with a univariable Cox
+# model so that the package does not depend on a Bioconductor package.
+cox_hazard_ratio <- function(group, time, event) {
+  fit <- survival::coxph(
+    survival::Surv(time, event) ~ factor(group)
+  )
+  ci <- summary(fit)$conf.int
+  c(ci[1, 1], ci[1, 3], ci[1, 4])
 }

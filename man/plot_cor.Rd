@@ -2,19 +2,25 @@
 % Please edit documentation in R/plot_stat_figures.R
 \name{plot_cor}
 \alias{plot_cor}
-\title{Plot correlation}
+\title{Plot the correlation between two variables}
 \usage{
-plot_cor(x, y, groups = NULL, xlab = NULL, ylab = NULL,
-  legend.pos = "top")
+plot_cor(x, y, groups = NULL, xlab = NULL, ylab = NULL, legend.pos = "top")
+}
+\arguments{
+\item{x, y}{Numeric vectors.}
+
+\item{groups}{Optional grouping vector used to colour the points.}
+
+\item{xlab, ylab}{Axis labels.}
+
+\item{legend.pos}{Legend position.}
 }
 \value{
-a ggplot2 object of the plot
+A \code{ggplot} object.
 }
 \description{
-This function plots correlation between two variables.
+Plot the correlation between two variables
 }
 \examples{
-
- library(cowplot)
- plot_cor(iris$Sepal.Length, iris$Sepal.Width)
+p <- plot_cor(iris$Sepal.Length, iris$Sepal.Width)
 }

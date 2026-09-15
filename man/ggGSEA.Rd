@@ -2,10 +2,21 @@
 % Please edit documentation in R/plot_gsea.R
 \name{ggGSEA}
 \alias{ggGSEA}
-\title{GSEA view using fgsea}
+\title{Plot a running enrichment score for a ranked gene list}
 \usage{
 ggGSEA(input, gs, title = "")
 }
+\arguments{
+\item{input}{Named numeric vector of ranked statistics.}
+
+\item{gs}{Gene set: a character vector of gene names.}
+
+\item{title}{Plot title.}
+}
+\value{
+A \code{ggplot} object.
+}
 \description{
-GSEA view using fgsea
+Computes the enrichment score with \code{DOSE::gseaScores()} and the p-value
+with \code{fgsea}, then draws the running score with the leading-edge position.
 }

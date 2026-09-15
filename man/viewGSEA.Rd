@@ -2,10 +2,23 @@
 % Please edit documentation in R/plot_gsea.R
 \name{viewGSEA}
 \alias{viewGSEA}
-\title{Updated viewGSEA for HTSanalyzeR2}
+\title{Plot a running enrichment score for an HTSanalyzeR2 result}
 \usage{
 viewGSEA(object, gscName, gsName, title = "")
 }
+\arguments{
+\item{object}{An \code{HTSanalyzeR2} result object.}
+
+\item{gscName}{Name of the gene set collection.}
+
+\item{gsName}{Name of the gene set.}
+
+\item{title}{Plot title.}
+}
+\value{
+A \code{ggplot} object.
+}
 \description{
-Updated viewGSEA for HTSanalyzeR2
+Updated version of the \code{viewGSEA()} helper distributed with
+\code{HTSanalyzeR2}.
 }

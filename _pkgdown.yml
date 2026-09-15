@@ -1,0 +1,36 @@
+url: https://gaofeng21cn.github.io/gfplot/
+
+template:
+  bootstrap: 5
+
+reference:
+  - title: Survival figures
+    contents:
+      - plot_KMCurve
+      - generate_time_event
+  - title: Discrimination figures
+    contents:
+      - plot_ROC
+      - plot_TimeROC
+      - plot_MulROC
+  - title: Sample-level figures
+    contents:
+      - plot_RiskScore
+      - plot_Boxplot
+      - plot_barplot
+      - plot_cor
+  - title: Projections and models
+    contents:
+      - plot_PCA
+      - plot_UMAP
+      - plot_lasso
+  - title: Enrichment and immune figures
+    contents:
+      - plot_GO
+      - viewGSEA
+      - ggGSEA
+      - plot_immune
+  - title: Helpers
+    contents:
+      - get_color
+      - gfplot_font_setup

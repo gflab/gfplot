@@ -2,58 +2,71 @@
 % Please edit documentation in R/plot_survival.R
 \name{plot_KMCurve}
 \alias{plot_KMCurve}
-\title{Plot Kaplan-Meier Curve}
+\title{Plot a Kaplan-Meier curve with risk table and hazard ratio}
 \usage{
-plot_KMCurve(clinical, labels, limit = NULL, annot = NULL,
-  color = NULL, font = "Arial", xlab = "Follow up",
-  ylab = "Survival Probability", title = NULL, legend.pos = "top",
-  palette = "jama_classic", risk.table = T, risk.table.ratio = 0.4,
-  anno.pos = "bottom", anno.x.shift = 0.5)
+plot_KMCurve(
+  clinical,
+  labels,
+  limit = NULL,
+  annot = NULL,
+  color = NULL,
+  font = "Arial",
+  xlab = "Follow up",
+  ylab = "Survival Probability",
+  title = NULL,
+  legend.pos = "top",
+  palette = "jama_classic",
+  risk.table = TRUE,
+  risk.table.ratio = 0.4,
+  anno.pos = "bottom",
+  anno.x.shift = 0.5
+)
 }
 \arguments{
-\item{clinical}{a survival object created by Surv function in survival package}
+\item{clinical}{A survival object created by \code{\link[survival:Surv]{survival::Surv()}}.}
 
-\item{labels}{a vector containing subtyping labels of patients}
+\item{labels}{A vector of group labels, one per patient.}
 
-\item{limit}{a numeric indicating the time limit of this KM plot}
+\item{limit}{Optional follow-up limit; later observations are censored at
+the limit.}
 
-\item{annot}{a character indicating the annotation showed up in the plot}
+\item{annot}{Optional extra annotation added to the plot.}
 
-\item{color}{a vector containing colors used for different subtypes}
+\item{color}{Optional vector of colours. A named vector also sets the group
+order.}
 
-\item{font}{a character indicating the font used in the plot (default: "Arial")}
+\item{font}{Font family used in the plot.}
 
-\item{xlab}{a character indicating the label of x-axis (default: "Follow up")}
+\item{xlab, ylab, title}{Axis and plot labels.}
 
-\item{ylab}{a character indicating the label of y-axis (default: "Survival Probability")}
+\item{legend.pos}{Legend position.}
 
-\item{title}{a character indicating the title (default: NULL)}
+\item{palette}{Palette name passed to \code{\link[=get_color]{get_color()}}.}
 
-\item{palette}{color paletter (default: "jama_classic")}
+\item{risk.table}{Draw the number-at-risk table.}
 
-\item{risk.table}{a logical indicating whether show risk table or not (default: TRUE)}
+\item{risk.table.ratio}{Relative height of the risk table.}
 
-\item{risk.table.ratio}{a numeric indicating the relative size of risk table (default: 0.4)}
+\item{anno.pos}{Either \code{"bottom"} or \code{"top"}; where the annotations are
+placed.}
 
-\item{anno.pos}{position of annotation (default: "bottom")}
-
-\item{anno.x.shift}{relative position of annotation in x-axis (default: 0.5)}
-
-\item{lenged.pos}{a character indicating whether the legend is (default: "top")}
+\item{anno.x.shift}{Horizontal position of the annotations when
+\code{anno.pos = "top"}.}
 }
 \value{
-a ggplot2 object of the plot
+A \code{ggplot} object, or a \code{cowplot} grid when \code{risk.table = TRUE}.
 }
 \description{
-This function plots Kaplan-Meier Curve for survival analysis.
+Draws survival curves for two or more groups, with an optional number-at-
+risk table, the log-rank p-value, and, for two groups, the hazard ratio
+from a univariable Cox model.
 }
 \examples{
-
- library(survival)
- library(survminer)
- extrafont::loadfonts()
- data(myeloma)
- clin <- Surv(myeloma$time, myeloma$event)
- labs <- factor(myeloma$molecular_group)
- plot_KMCurve(clin, labs)
+library(survival)
+fit_data <- survival::lung
+p <- plot_KMCurve(
+  Surv(fit_data$time, fit_data$status == 2),
+  factor(fit_data$sex),
+  risk.table = FALSE
+)
 }

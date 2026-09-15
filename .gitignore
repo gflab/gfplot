@@ -2,3 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+docs/
+*.html
+inst/doc
