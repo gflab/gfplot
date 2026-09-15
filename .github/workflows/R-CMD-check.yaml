@@ -38,8 +38,13 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
-          needs: check
+          # Hard dependencies keep the run fast: DOSE, HTSanalyzeR2, and the
+          # other optional back ends are not installed. testthat is added
+          # explicitly because it lives in Suggests, and the examples and
+          # tests guard themselves when an optional back end is absent.
+          extra-packages: |
+            any::rcmdcheck
+            any::testthat
           dependencies: '"hard"'
 
       - uses: r-lib/actions/check-r-package@v2
