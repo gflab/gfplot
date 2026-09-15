@@ -12,7 +12,7 @@ Description: A compact plotting toolkit for cancer bioinformatics figures.
     radar charts. Palette helpers return colour-blind-friendly colours in
     journal styles.
 License: MIT + file LICENSE
-URL: https://github.com/gflab/gfplot, https://gaofeng21cn.github.io/gfplot/
+URL: https://github.com/gflab/gfplot, https://gflab.github.io/gfplot/
 BugReports: https://github.com/gflab/gfplot/issues
 Encoding: UTF-8
 Imports:

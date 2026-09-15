@@ -21,7 +21,7 @@ set beforehand.
 Useful links:
 \itemize{
   \item \url{https://github.com/gflab/gfplot}
-  \item \url{https://gaofeng21cn.github.io/gfplot/}
+  \item \url{https://gflab.github.io/gfplot/}
   \item Report bugs at \url{https://github.com/gflab/gfplot/issues}
 }
 
