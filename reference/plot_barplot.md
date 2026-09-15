@@ -74,4 +74,15 @@ p <- plot_barplot(
   value = c(rnorm(20), rnorm(20, 1)),
   group = rep(c("A", "B"), each = 20)
 )
+
+if (requireNamespace("ggpubr", quietly = TRUE)) {
+  p <- plot_barplot(
+    value = c(rnorm(20), rnorm(20, 1), rnorm(20, 2)),
+    group = rep(c("A", "B", "C"), each = 20),
+    comparisons = list(c("A", "B"), c("B", "C"))
+  )
+}
+#> `stat_compare_means()` with `comparisons` displays *unadjusted* p-values (no correction for multiple comparisons).
+#> ℹ For p-values adjusted for multiple comparisons, use `geom_pwc()`, or `stat_pvalue_manual()` together with `compare_means(..., p.adjust.method = )`.
+#> This message is displayed once per session.
 ```

@@ -90,11 +90,12 @@ A `ggplot` object, or a `cowplot` grid when `risk.table = TRUE`.
 ## Examples
 
 ``` r
-library(survival)
-fit_data <- survival::lung
-p <- plot_KMCurve(
-  Surv(fit_data$time, fit_data$status == 2),
-  factor(fit_data$sex),
-  risk.table = FALSE
-)
+if (requireNamespace("survminer", quietly = TRUE)) {
+  fit_data <- survival::lung
+  p <- plot_KMCurve(
+    survival::Surv(fit_data$time, fit_data$status == 2),
+    factor(fit_data$sex),
+    risk.table = FALSE
+  )
+}
 ```
