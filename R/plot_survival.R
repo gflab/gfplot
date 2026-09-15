@@ -25,13 +25,14 @@
 #' @return A `ggplot` object, or a `cowplot` grid when `risk.table = TRUE`.
 #' @export
 #' @examples
-#' library(survival)
-#' fit_data <- survival::lung
-#' p <- plot_KMCurve(
-#'   Surv(fit_data$time, fit_data$status == 2),
-#'   factor(fit_data$sex),
-#'   risk.table = FALSE
-#' )
+#' if (requireNamespace("survminer", quietly = TRUE)) {
+#'   fit_data <- survival::lung
+#'   p <- plot_KMCurve(
+#'     survival::Surv(fit_data$time, fit_data$status == 2),
+#'     factor(fit_data$sex),
+#'     risk.table = FALSE
+#'   )
+#' }
 plot_KMCurve <- function(clinical, labels, limit = NULL, annot = NULL,
                          color = NULL, font = "Arial", xlab = "Follow up",
                          ylab = "Survival Probability", title = NULL,

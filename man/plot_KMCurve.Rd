@@ -62,11 +62,12 @@ risk table, the log-rank p-value, and, for two groups, the hazard ratio
 from a univariable Cox model.
 }
 \examples{
-library(survival)
-fit_data <- survival::lung
-p <- plot_KMCurve(
-  Surv(fit_data$time, fit_data$status == 2),
-  factor(fit_data$sex),
-  risk.table = FALSE
-)
+if (requireNamespace("survminer", quietly = TRUE)) {
+  fit_data <- survival::lung
+  p <- plot_KMCurve(
+    survival::Surv(fit_data$time, fit_data$status == 2),
+    factor(fit_data$sex),
+    risk.table = FALSE
+  )
+}
 }

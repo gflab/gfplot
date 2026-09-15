@@ -25,6 +25,14 @@
 #'   value = c(rnorm(20), rnorm(20, 1)),
 #'   group = rep(c("A", "B"), each = 20)
 #' )
+#'
+#' if (requireNamespace("ggpubr", quietly = TRUE)) {
+#'   p <- plot_barplot(
+#'     value = c(rnorm(20), rnorm(20, 1), rnorm(20, 2)),
+#'     group = rep(c("A", "B", "C"), each = 20),
+#'     comparisons = list(c("A", "B"), c("B", "C"))
+#'   )
+#' }
 plot_barplot <- function(value, group, comparisons = NULL,
                          palette = "jama_classic", color = NULL,
                          ylab = "Score", xlab = NULL, title = NULL,
