@@ -16,6 +16,29 @@ reference:
   - title: Effect estimates
     contents:
       - plot_forest
+  - title: Prediction performance
+    contents:
+      - plot_pr_curve
+      - plot_calibration
+      - plot_decision_curve
+  - title: Time-to-event
+    contents:
+      - plot_cumulative_incidence
+  - title: Genomic and omics
+    contents:
+      - plot_volcano
+      - plot_waterfall
+  - title: Matrix and confusion
+    contents:
+      - plot_heatmap
+      - plot_confusion
+  - title: Distributions
+    contents:
+      - plot_violin
+  - title: Projections
+    contents:
+      - plot_embedding
+      - plot_tsne
   - title: Figure specifications
     contents:
       - gfplot_spec

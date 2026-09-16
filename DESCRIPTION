@@ -1,7 +1,7 @@
 Package: gfplot
 Type: Package
 Title: Publication-Ready Figures for Cancer Bioinformatics
-Version: 0.5.0
+Version: 0.6.0
 Authors@R: person("Feng", "Gao", email = "gaofeng21cn@gmail.com",
     role = c("aut", "cre"))
 Description: A compact plotting toolkit for cancer bioinformatics figures.
@@ -31,6 +31,7 @@ Imports:
     tidyr
 Suggests:
     clinstats,
+    digest,
     extrafont,
     fgsea,
     ggpubr,
@@ -42,6 +43,7 @@ Suggests:
     knitr,
     ragg,
     rmarkdown,
+    Rtsne,
     survivalROC,
     systemfonts,
     testthat (>= 3.0.0),

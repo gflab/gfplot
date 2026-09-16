@@ -7,10 +7,13 @@
 gfplot_save(
   plot,
   filename,
-  width = 7,
-  height = 5,
+  width = NULL,
+  height = NULL,
   dpi = 300,
+  size = NULL,
   font = "Arial",
+  provenance = FALSE,
+  call = NULL,
   ...
 )
 }
@@ -21,16 +24,32 @@ draws it.}
 \item{filename}{Output path. The extension selects the device: \code{.png},
 \code{.tiff}, \code{.jpg}, \code{.jpeg}, or \code{.pdf}.}
 
-\item{width, height}{Size in inches.}
+\item{width, height}{Size in inches. Default to 7 by 5, or to the \code{size}
+preset when one is given.}
 
 \item{dpi}{Resolution for raster output.}
 
+\item{size}{Journal size preset, used when \code{width} and \code{height} are not
+given: \code{"single"} for one column, \code{"onehalf"} for 1.5 columns, \code{"double"}
+for the full text width, or \code{"slide"} for a 16:9 presentation. The
+journal widths follow the common 85 mm, 114 mm, and 170 mm conventions.
+Supplying \code{width} or \code{height} overrides the preset for that dimension.}
+
 \item{font}{Font family passed to the device unchanged.}
+
+\item{provenance}{Write a \code{.json} file next to the figure recording what
+produced it: the figure family or call, the package and R versions, the
+output size and device, and the SHA-256 of the written file. This is what
+makes a figure in a manuscript traceable to the code that drew it.}
+
+\item{call}{The call to record in the provenance file. Defaults to the
+function as it was invoked.}
 
 \item{...}{Passed on to the device function.}
 }
 \value{
-\code{filename}, invisibly.
+\code{filename}, invisibly. The path of the provenance file is attached
+as the \code{"provenance"} attribute when one is written.
 }
 \description{
 Writing an R figure with Arial is device dependent: the base \code{pdf()} device

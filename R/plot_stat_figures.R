@@ -152,6 +152,8 @@ plot_cor <- function(x, y, groups = NULL, xlab = NULL, ylab = NULL,
 #' @param title Plot title.
 #' @param palette Palette name passed to [get_color()].
 #' @param font Font family used in the plot.
+#' @param ... Passed to [plot_embedding()], for example `ellipse`, `seed`, or
+#'   `label_centres`.
 #'
 #' @return A `ggplot` object.
 #' @export
@@ -160,42 +162,19 @@ plot_cor <- function(x, y, groups = NULL, xlab = NULL, ylab = NULL,
 #' p <- plot_PCA(matrix(rnorm(200), nrow = 20), rep(c("A", "B"), each = 10))
 plot_PCA <- function(data, labs,
                      title = "Evaluate the batch effect between groups",
-                     palette = "house", font = "Arial") {
-  df <- data.frame(group = labs, data, check.names = FALSE)
-  pca <- stats::prcomp(df[, -1])
-  variance <- round(100 * pca$sdev^2 / sum(pca$sdev^2), 1)
-  plot_df <- data.frame(
-    group = labs,
-    PC1 = pca$x[, 1],
-    PC2 = pca$x[, 2]
+                     palette = "house", font = "Arial", ...) {
+  # Delegates to plot_embedding() so every projection shares one appearance
+  # and one implementation.
+  plot_embedding(
+    data, labs, method = "pca", palette = palette,
+    title = title, font = font, ...
   )
-  groups <- levels(factor(labs))
-
-  ggplot2::ggplot(
-    plot_df,
-    ggplot2::aes(x = .data$PC1, y = .data$PC2, color = .data$group)
-  ) +
-    ggplot2::geom_point() +
-    gfplot_theme(font = font) +
-    ggplot2::theme(
-      legend.title = ggplot2::element_blank(),
-      plot.title = ggplot2::element_text(hjust = 0.5)
-    ) +
-    ggplot2::scale_color_manual(
-      labels = groups,
-      values = get_color(palette, length(groups)),
-      guide = gfplot_legend(groups)
-    ) +
-    ggplot2::labs(
-      title = title,
-      x = sprintf("PC1 (%.1f%%)", variance[1]),
-      y = sprintf("PC2 (%.1f%%)", variance[2])
-    )
 }
 
 #' UMAP projection plot
 #'
 #' @inheritParams plot_PCA
+#' @param ... Passed to [plot_embedding()].
 #'
 #' @return A `ggplot` object.
 #' @export
@@ -208,33 +187,37 @@ plot_PCA <- function(data, labs,
 #' }
 plot_UMAP <- function(data, labs,
                       title = "Evaluate the batch effect between groups",
-                      palette = "house", font = "Arial") {
-  gfplot_require("umap")
-  embedding <- umap::umap(data)
-  df_plot <- data.frame(
-    Group = labs,
-    UMAP1 = embedding$layout[, 1],
-    UMAP2 = embedding$layout[, 2],
-    check.names = FALSE
+                      palette = "house", font = "Arial", ...) {
+  plot_embedding(
+    data, labs, method = "umap", palette = palette,
+    title = title, font = font, ...
   )
-  groups <- levels(factor(labs))
+}
 
-  ggplot2::ggplot(
-    df_plot,
-    ggplot2::aes(x = .data$UMAP1, y = .data$UMAP2, color = .data$Group)
-  ) +
-    ggplot2::geom_point() +
-    gfplot_theme(font = font) +
-    ggplot2::theme(
-      legend.title = ggplot2::element_blank(),
-      plot.title = ggplot2::element_text(hjust = 0.5)
-    ) +
-    ggplot2::scale_color_manual(
-      labels = groups,
-      values = get_color(palette, length(groups)),
-      guide = gfplot_legend(groups)
-    ) +
-    ggplot2::ggtitle(title)
+#' t-SNE projection of samples coloured by group
+#'
+#' @inheritParams plot_PCA
+#' @param perplexity Perplexity for the t-SNE embedding.
+#' @param seed Optional seed; t-SNE is stochastic, so a seed makes a figure
+#'   reproducible.
+#'
+#' @return A `ggplot` object.
+#' @export
+#' @examples
+#' \donttest{
+#' if (requireNamespace("Rtsne", quietly = TRUE)) {
+#'   set.seed(1)
+#'   p <- plot_tsne(matrix(rnorm(200), nrow = 20), rep(c("A", "B"), each = 10))
+#' }
+#' }
+plot_tsne <- function(data, labs,
+                      title = "Evaluate the batch effect between groups",
+                      perplexity = 30, seed = 1,
+                      palette = "house", font = "Arial", ...) {
+  plot_embedding(
+    data, labs, method = "tsne", perplexity = perplexity, seed = seed,
+    palette = palette, title = title, font = font, ...
+  )
 }
 
 #' Plot a risk score ordered by patient

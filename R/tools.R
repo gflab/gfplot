@@ -86,6 +86,53 @@ generate_time_event <- function(clinical, limits, labels = NULL) {
 # Report a missing optional dependency with an actionable message.
 # Confirm that a data frame carries the columns a function needs, and name the
 # ones that are absent rather than failing later inside a model or a layer.
+check_numeric <- function(x, arg) {
+  if (!is.numeric(x)) {
+    cli::cli_abort("{.arg {arg}} must be numeric, not {.cls {class(x)[1]}}.")
+  }
+  invisible(x)
+}
+
+check_length <- function(x, y, x_arg, y_arg) {
+  if (length(x) != length(y)) {
+    cli::cli_abort(c(
+      "{.arg {x_arg}} and {.arg {y_arg}} must have the same length.",
+      x = "{.arg {x_arg}} has length {length(x)}.",
+      x = "{.arg {y_arg}} has length {length(y)}."
+    ))
+  }
+  invisible(x)
+}
+
+# Resolve a binary outcome to 0/1. Logical vectors are coded TRUE = 1 and
+# numeric 0/1 vectors use 1 as the event. Anything else needs `positive`, so
+# the event class is never guessed from the data.
+resolve_binary_outcome <- function(outcome, positive = NULL, arg = "outcome") {
+  if (!is.null(positive)) {
+    values <- unique(outcome[!is.na(outcome)])
+    if (!positive %in% values) {
+      cli::cli_abort("{.val {positive}} is not a value of {.arg {arg}}.")
+    }
+    if (length(values) != 2) {
+      cli::cli_abort(
+        "{.arg {arg}} must have exactly two distinct non-missing values."
+      )
+    }
+    return(as.integer(outcome == positive))
+  }
+  if (is.logical(outcome)) {
+    return(as.integer(outcome))
+  }
+  values <- unique(outcome[!is.na(outcome)])
+  if (is.numeric(outcome) && all(values %in% c(0, 1))) {
+    return(as.integer(outcome))
+  }
+  cli::cli_abort(c(
+    "{.arg {arg}} is not a 0/1 or logical vector.",
+    i = "Supply {.arg positive} to name the event level explicitly."
+  ))
+}
+
 check_columns <- function(data, columns, arg = "data") {
   if (!is.data.frame(data)) {
     cli::cli_abort(
@@ -245,12 +292,25 @@ gfplot_font_setup <- function(font = "Arial", quiet = FALSE) {
 #'   draws it.
 #' @param filename Output path. The extension selects the device: `.png`,
 #'   `.tiff`, `.jpg`, `.jpeg`, or `.pdf`.
-#' @param width,height Size in inches.
+#' @param width,height Size in inches. Default to 7 by 5, or to the `size`
+#'   preset when one is given.
 #' @param dpi Resolution for raster output.
+#' @param size Journal size preset, used when `width` and `height` are not
+#'   given: `"single"` for one column, `"onehalf"` for 1.5 columns, `"double"`
+#'   for the full text width, or `"slide"` for a 16:9 presentation. The
+#'   journal widths follow the common 85 mm, 114 mm, and 170 mm conventions.
+#'   Supplying `width` or `height` overrides the preset for that dimension.
 #' @param font Font family passed to the device unchanged.
+#' @param provenance Write a `.json` file next to the figure recording what
+#'   produced it: the figure family or call, the package and R versions, the
+#'   output size and device, and the SHA-256 of the written file. This is what
+#'   makes a figure in a manuscript traceable to the code that drew it.
+#' @param call The call to record in the provenance file. Defaults to the
+#'   function as it was invoked.
 #' @param ... Passed on to the device function.
 #'
-#' @return `filename`, invisibly.
+#' @return `filename`, invisibly. The path of the provenance file is attached
+#'   as the `"provenance"` attribute when one is written.
 #'
 #' @seealso [gfplot_font_setup()] to see which devices can render a font.
 #' @export
@@ -259,8 +319,12 @@ gfplot_font_setup <- function(font = "Arial", quiet = FALSE) {
 #' path <- tempfile(fileext = ".png")
 #' gfplot_save(p, path, width = 4, height = 3)
 #' unlink(path)
-gfplot_save <- function(plot, filename, width = 7, height = 5, dpi = 300,
-                        font = "Arial", ...) {
+gfplot_save <- function(plot, filename, width = NULL, height = NULL, dpi = 300,
+                        size = NULL, font = "Arial", provenance = FALSE,
+                        call = NULL, ...) {
+  dimensions <- gfplot_dimensions(size, width, height)
+  width <- dimensions$width
+  height <- dimensions$height
   ext <- tolower(tools::file_ext(filename))
   if (!nzchar(ext)) {
     cli::cli_abort(c(
@@ -283,9 +347,145 @@ gfplot_save <- function(plot, filename, width = 7, height = 5, dpi = 300,
   )
 
   open_device()
-  on.exit(grDevices::dev.off(), add = TRUE)
+  # Close the device explicitly before hashing the file: on.exit() would run
+  # only after the provenance is written, and the file is not flushed until
+  # the device closes. The handler stays as a safety net for a drawing error.
+  device <- grDevices::dev.cur()
+  on.exit({
+    if (device %in% grDevices::dev.list()) {
+      grDevices::dev.off(device)
+    }
+  }, add = TRUE)
   print(plot)
+  grDevices::dev.off(device)
+
+  if (isTRUE(provenance)) {
+    record <- gfplot_provenance(
+      filename, plot, width, height, dpi, ext, font,
+      call = call %||% sys.call(-1)
+    )
+    attr(filename, "provenance") <- record
+  }
   invisible(filename)
+}
+
+# Journal sizes, in the widths the common single, 1.5, and double column
+# layouts use. Heights keep the golden ratio unless one is supplied.
+gfplot_size_presets <- function() {
+  mm <- function(x) x / 25.4
+  list(
+    single = c(width = mm(85), height = mm(85) / 1.25),
+    onehalf = c(width = mm(114), height = mm(114) / 1.35),
+    double = c(width = mm(170), height = mm(170) / 1.45),
+    slide = c(width = 10, height = 5.625)
+  )
+}
+
+# Resolve a preset and let an explicit width or height win, so a caller can
+# take the standard width and set their own height. Without a preset the
+# historical 7 by 5 default applies, so existing calls are unaffected.
+gfplot_dimensions <- function(size, width, height) {
+  if (is.null(size)) {
+    return(list(
+      width = width %||% 7,
+      height = height %||% 5
+    ))
+  }
+  presets <- gfplot_size_presets()
+  if (!size %in% names(presets)) {
+    cli::cli_abort(c(
+      "Unknown size {.val {size}}.",
+      i = "Available sizes: {.val {names(presets)}}."
+    ))
+  }
+  preset <- presets[[size]]
+  list(
+    width = width %||% unname(preset[["width"]]),
+    height = height %||% unname(preset[["height"]])
+  )
+}
+
+# What produced this file, written next to it so a figure in a manuscript can
+# be traced back to the code and versions that drew it.
+gfplot_provenance <- function(filename, plot, width, height, dpi, ext, font,
+                              call) {
+  path <- sub("\\.[^.]*$", ".provenance.json", filename)
+  digest <- if (requireNamespace("digest", quietly = TRUE)) {
+    digest::digest(file = filename, algo = "sha256")
+  } else {
+    NA_character_
+  }
+  record <- list(
+    schema = "gfplot.provenance.v1",
+    figure = gfplot_figure_identity(plot),
+    output = list(
+      path = basename(filename),
+      format = ext,
+      width_in = width,
+      height_in = height,
+      dpi = dpi,
+      sha256 = digest
+    ),
+    font = font,
+    call = paste(deparse(call), collapse = " "),
+    environment = list(
+      gfplot = as.character(utils::packageVersion("gfplot")),
+      r = R.version.string,
+      platform = R.version$platform
+    ),
+    created = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
+  )
+  json <- gfplot_to_json(record)
+  writeLines(json, path)
+  path
+}
+
+# Name the figure, when the object says what it is. A specification carries
+# its family; a plain ggplot object is reported as such.
+gfplot_figure_identity <- function(plot) {
+  spec <- attr(plot, "gfplot_spec")
+  if (!is.null(spec)) {
+    return(list(kind = "spec", family = spec$family))
+  }
+  list(kind = class(plot)[1])
+}
+
+# A small JSON writer, so provenance does not add a dependency. Values are
+# scalars, character vectors, and one level of nesting.
+gfplot_to_json <- function(x, indent = 0) {
+  pad <- strrep("  ", indent)
+  if (is.list(x)) {
+    if (length(x) == 0) {
+      return(paste0("{}"))
+    }
+    entries <- vapply(names(x), function(name) {
+      value <- gfplot_to_json(x[[name]], indent + 1)
+      sprintf("%s  %s: %s", pad, gfplot_json_string(name), value)
+    }, character(1))
+    return(paste0("{\n", paste(entries, collapse = ",\n"), "\n", pad, "}"))
+  }
+  if (length(x) > 1) {
+    return(paste0(
+      "[", paste(vapply(x, gfplot_to_json, character(1)), collapse = ", "), "]"
+    ))
+  }
+  if (is.null(x) || (length(x) == 1 && is.na(x))) {
+    return("null")
+  }
+  if (is.logical(x)) {
+    return(if (isTRUE(x)) "true" else "false")
+  }
+  if (is.numeric(x)) {
+    return(format(x, digits = 12))
+  }
+  gfplot_json_string(as.character(x))
+}
+
+gfplot_json_string <- function(x) {
+  x <- gsub("\\\\", "\\\\\\\\", x)
+  x <- gsub("\"", "\\\\\"", x)
+  x <- gsub("\n", "\\\\n", x)
+  paste0("\"", x, "\"")
 }
 
 # Open a raster device, preferring ragg because it resolves system fonts.

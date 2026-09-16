@@ -9,7 +9,8 @@ plot_PCA(
   labs,
   title = "Evaluate the batch effect between groups",
   palette = "house",
-  font = "Arial"
+  font = "Arial",
+  ...
 )
 }
 \arguments{
@@ -23,6 +24,9 @@ columns.}
 \item{palette}{Palette name passed to \code{\link[=get_color]{get_color()}}.}
 
 \item{font}{Font family used in the plot.}
+
+\item{...}{Passed to \code{\link[=plot_embedding]{plot_embedding()}}, for example \code{ellipse}, \code{seed}, or
+\code{label_centres}.}
 }
 \value{
 A \code{ggplot} object.

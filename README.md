@@ -112,10 +112,16 @@ Every function returns a `ggplot` object.
 | --- | --- |
 | Survival | `plot_KMCurve()`, `generate_time_event()` |
 | Discrimination | `plot_ROC()`, `plot_TimeROC()`, `plot_MulROC()` |
-| Effect estimates | `plot_forest()` |
-| Sample-level figures | `plot_RiskScore()`, `plot_Boxplot()`, `plot_barplot()`, `plot_cor()` |
-| Projections and models | `plot_PCA()`, `plot_UMAP()`, `plot_lasso()` |
-| Enrichment and immune figures | `plot_GO()`, `viewGSEA()`, `ggGSEA()`, `plot_immune()` |
+| Prediction performance | `plot_pr_curve()`, `plot_calibration()`, `plot_decision_curve()` |
+| Clinical utility | `plot_decision_curve()` |
+| Time-to-event | `plot_cumulative_incidence()` |
+| Effect estimates | `plot_forest()`, `plot_lasso()` |
+| Sample-level figures | `plot_RiskScore()`, `plot_Boxplot()`, `plot_barplot()`, `plot_cor()`, `plot_violin()` |
+| Projections | `plot_embedding()`, `plot_PCA()`, `plot_UMAP()`, `plot_tsne()` |
+| Matrix pattern | `plot_heatmap()`, `plot_confusion()` |
+| Genomic and omics | `plot_volcano()`, `plot_GO()` |
+| Trial response | `plot_waterfall()` |
+| Enrichment and immune | `viewGSEA()`, `ggGSEA()`, `plot_immune()` |
 | Style and output | `get_color()`, `gfplot_save()`, `gfplot_font_setup()` |
 
 `gfplot_families()` lists every figure the package can draw, with its
@@ -182,6 +188,50 @@ gfplot_save(gfplot_render(spec), "figure2.png", width = 7, height = 4)
 `gfplot_families()` lists every figure the package can draw and how to call
 it.
 
+## Prediction performance and clinical utility
+
+`plot_ROC()` answers whether a model can rank patients. Three companion
+figures answer what follows, which is usually the harder question:
+
+```r
+# Precision against recall, for a rare positive class
+plot_pr_curve(scores, outcome)
+
+# Is the model honest about the probability it predicts?
+plot_calibration(probability, outcome, bins = 10)
+
+# Does acting on it do more good than harm?
+plot_decision_curve(probability, outcome)
+```
+
+`plot_calibration()` bins the predictions into quantiles and draws binomial
+intervals, so each point rests on a similar number of observations.
+`plot_decision_curve()` draws the net benefit against treating everyone and
+treating no one.
+
+## Competing risks
+
+When a patient can experience one of several mutually exclusive events, a
+Kaplan-Meier estimate of a single event is biased upward: patients who had a
+competing event are still counted as being at risk of the event of interest.
+`plot_cumulative_incidence()` uses the cumulative incidence function instead.
+
+```r
+# status: 0 censored, 1 event of interest, 2 competing event
+plot_cumulative_incidence(time, status, group = arm)
+```
+
+## Other figures
+
+```r
+plot_volcano(effect, p_value, label)          # differential analysis
+plot_waterfall(response)                       # ranked patient response
+plot_heatmap(matrix, diverging = TRUE)         # correlation or signature matrix
+plot_confusion(predicted, actual, positive = 1)# classification counts
+plot_violin(value, group)                      # distributions with observations
+plot_embedding(data, groups, method = "tsne")  # PCA, t-SNE, or UMAP
+```
+
 ## Save a figure
 
 `gfplot_save()` writes a file through a graphics device that can render the
@@ -192,6 +242,37 @@ figure font, chosen from the file extension. `.png`, `.tiff`, `.jpg`, and
 gfplot_save(p, "figure1.png", width = 7, height = 5, dpi = 300)
 gfplot_save(p, "figure1.pdf", width = 7, height = 5)
 ```
+
+Use a journal size preset to produce the figure at the width it will be
+printed, rather than scaling it afterwards:
+
+```r
+gfplot_save(p, "figure2.png", size = "single")   # 85 mm, one column
+gfplot_save(p, "figure2.png", size = "onehalf")  # 114 mm, 1.5 columns
+gfplot_save(p, "figure2.png", size = "double")   # 170 mm, full width
+gfplot_save(p, "figure2.png", size = "slide")    # 16:9 presentation
+```
+
+An explicit `width` or `height` overrides the preset for that dimension.
+
+Add `provenance = TRUE` to write a `.provenance.json` beside the figure
+recording what produced it:
+
+```r
+gfplot_save(p, "figure2.png", size = "double", provenance = TRUE)
+```
+
+```json
+{
+  "schema": "gfplot.provenance.v1",
+  "figure": { "kind": "spec", "family": "forest" },
+  "output": { "format": "png", "width_in": 6.69, "sha256": "…" },
+  "environment": { "gfplot": "0.6.0", "r": "R version 4.6.0" }
+}
+```
+
+That record is what lets a figure in a manuscript be traced back to the code
+and versions that drew it.
 
 Figures are drawn when they are printed, so a plot object is only turned into
 a file by `gfplot_save()`, `print()`, or `ggsave()`.
@@ -279,12 +360,15 @@ report what to install, so `library(gfplot)` always works.
 | --- | --- | --- |
 | `plot_KMCurve()` | survminer | `install.packages("survminer")` |
 | `plot_TimeROC()` | survivalROC | `install.packages("survivalROC")` |
-| `plot_UMAP()` | umap | `install.packages("umap")` |
+| `plot_UMAP()`, `plot_embedding(method = "umap")` | umap | `install.packages("umap")` |
+| `plot_tsne()` | Rtsne | `install.packages("Rtsne")` |
 | `plot_lasso()` | glmnet | `install.packages("glmnet")` |
 | `plot_immune()` | ggradar | `remotes::install_github("ricardo-bion/ggradar")` |
 | `viewGSEA()`, `ggGSEA()` | DOSE, fgsea | `BiocManager::install(c("DOSE", "fgsea"))` |
-| `plot_barplot()` significance | ggpubr | `install.packages("ggpubr")` |
+| `plot_barplot()`, `plot_violin()` significance | ggpubr, ggsignif | `install.packages(c("ggpubr", "ggsignif"))` |
 | `gfplot_save()` raster output | ragg | `install.packages("ragg")` |
+| `gfplot_save(provenance = TRUE)` hashing | digest | `install.packages("digest")` |
+| `plot_forest()` from a clinstats table | clinstats | `remotes::install_github("gflab/clinstats")` |
 
 ## Citation
 

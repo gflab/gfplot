@@ -27,7 +27,133 @@ gfplot_family_registry <- function() {
       arguments = c("data", "term", "estimate", "lower", "upper"),
       validate = validate_forest_spec,
       render = render_forest_spec
+    ),
+    pr_curve = gfplot_simple_family(
+      title = "Precision-recall curve",
+      category = "Prediction Performance",
+      fn = plot_pr_curve,
+      required = c("scores", "labels"),
+      description = paste(
+        "Precision against recall for an imbalanced binary outcome, where the",
+        "positive class is the one of interest."
+      )
+    ),
+    calibration = gfplot_simple_family(
+      title = "Calibration curve",
+      category = "Prediction Performance",
+      fn = plot_calibration,
+      required = c("probability", "outcome"),
+      description = paste(
+        "Predicted probability against observed proportion, which tests",
+        "whether a model that ranks well is also honest about its level."
+      )
+    ),
+    decision_curve = gfplot_simple_family(
+      title = "Decision curve",
+      category = "Clinical Utility",
+      fn = plot_decision_curve,
+      required = c("probability", "outcome"),
+      description = paste(
+        "Net benefit across decision thresholds, against treating everyone",
+        "and treating no one."
+      )
+    ),
+    cumulative_incidence = gfplot_simple_family(
+      title = "Cumulative incidence",
+      category = "Time-to-Event",
+      fn = plot_cumulative_incidence,
+      required = c("time", "status"),
+      description = paste(
+        "Probability of each event type over follow-up when competing events",
+        "prevent the event of interest."
+      )
+    ),
+    volcano = gfplot_simple_family(
+      title = "Volcano plot",
+      category = "Genomic and Omics",
+      fn = plot_volcano,
+      required = c("effect", "p_value", "label"),
+      description = paste(
+        "Effect size against significance, with the calling thresholds drawn."
+      )
+    ),
+    waterfall = gfplot_simple_family(
+      title = "Waterfall plot",
+      category = "Clinical Trial Response and Safety",
+      fn = plot_waterfall,
+      required = c("response"),
+      description = paste(
+        "Patients ranked by response, coloured by response category."
+      )
+    ),
+    heatmap = gfplot_simple_family(
+      title = "Heatmap",
+      category = "Matrix Pattern",
+      fn = plot_heatmap,
+      required = c("matrix"),
+      description = paste(
+        "A matrix of values with an optional colourbar, drawn as tiles."
+      )
+    ),
+    confusion = gfplot_simple_family(
+      title = "Confusion matrix",
+      category = "Matrix Pattern",
+      fn = plot_confusion,
+      required = c("predicted", "actual"),
+      description = paste(
+        "Predicted against actual class, with counts and optional row",
+        "percentages."
+      )
+    ),
+    embedding = gfplot_simple_family(
+      title = "Embedding scatter",
+      category = "Data Geometry",
+      fn = plot_embedding,
+      required = c("data", "groups"),
+      description = paste(
+        "Grouped samples in an embedding, for PCA, t-SNE, or UMAP."
+      )
+    ),
+    distribution = gfplot_simple_family(
+      title = "Distribution comparison",
+      category = "Population and Baseline",
+      fn = plot_violin,
+      required = c("value", "group"),
+      description = paste(
+        "Grouped distributions as violin plots with the observations shown."
+      )
     )
+  )
+}
+
+# Most families are a plotting function plus a list of required arguments, so
+# one factory covers them instead of a validator and renderer each. A family
+# with behaviour to check overrides this with its own pair.
+gfplot_simple_family <- function(title, category, fn, required,
+                                 description = "", status = "stable",
+                                 arguments = required) {
+  function_name <- as.character(substitute(fn))
+  list(
+    title = title,
+    category = category,
+    status = status,
+    function_name = function_name,
+    description = description,
+    arguments = arguments,
+    validate = function(spec) {
+      missing <- setdiff(required, names(spec$args))
+      if (length(missing) > 0) {
+        cli::cli_abort(c(
+          "The {.val {spec$family}} specification is missing {.arg {missing}}.",
+          i = "Required arguments: {.val {required}}."
+        ))
+      }
+      if ("data" %in% names(spec$args) && !is.data.frame(spec$args$data)) {
+        cli::cli_abort("{.arg data} must be a data frame.")
+      }
+      spec
+    },
+    render = function(spec) do.call(fn, spec$args)
   )
 }
 
@@ -46,6 +172,7 @@ gfplot_function_families <- function() {
     c("plot_cor", "Sample-level", "Correlation scatter with regression"),
     c("plot_PCA", "Data geometry", "Principal component projection"),
     c("plot_UMAP", "Data geometry", "UMAP projection"),
+    c("plot_tsne", "Data geometry", "t-SNE projection"),
     c("plot_lasso", "Effect Estimate", "Lasso coefficient paths"),
     c("plot_GO", "Enrichment", "Enriched term dot plot"),
     c("plot_immune", "Enrichment", "Immune infiltration radar chart"),
@@ -212,7 +339,11 @@ gfplot_render <- function(spec) {
   if (is.null(entry)) {
     cli::cli_abort("Unknown figure family {.val {spec$family}}.")
   }
-  entry$render(spec)
+  plot <- entry$render(spec)
+  # Carry the family on the object so gfplot_save() can name it in the
+  # provenance record without the caller repeating it.
+  attr(plot, "gfplot_spec") <- spec
+  plot
 }
 
 # Internal helpers shared by family validators ---------------------------
