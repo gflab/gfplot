@@ -1,10 +1,19 @@
 # The house style, in one place.
 #
 # Every plotting function draws on these three pieces instead of restating
-# colours, type sizes, and legend behaviour locally. The vocabulary follows
-# the lab display standard: colours are addressed by semantic role rather than
-# by hex value, so a figure says "this is the model curve" rather than "this is
-# #0B4F6C", and the whole suite can be retuned from one place.
+# colours, type sizes, and legend behaviour locally.
+#
+# The vocabulary is adapted from the lab display standard in
+# `mas-scholar-skills` (`packs/medical-display-core`), which addresses colours
+# by semantic role rather than by hex value and derives type sizes from one
+# base size. A figure there says "this is the model curve" rather than "this is
+# #0B4F6C", and the suite can be retuned from one place. Those two properties
+# are what this file brings to a function-based plotting package.
+#
+# The template system that surrounds that standard is deliberately not copied:
+# it renders from a JSON payload with a QC profile and a template catalog,
+# which answers a different question (a governed evidence pipeline) than a
+# plotting package that users call directly.
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
