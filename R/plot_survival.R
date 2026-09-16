@@ -155,15 +155,18 @@ plot_KMCurve <- function(clinical, labels, limit = NULL, annot = NULL,
       axis.text = ggplot2::element_text(family = font),
       axis.title.y = ggplot2::element_blank()
     )
-    return(cowplot::plot_grid(
-      plotlist = list(
-        p$plot + ggplot2::theme(axis.title.x = ggplot2::element_blank()),
-        p$table + ggplot2::labs(x = xlab)
+    return(gfplot_assemble(
+      cowplot::plot_grid(
+        plotlist = list(
+          p$plot + ggplot2::theme(axis.title.x = ggplot2::element_blank()),
+          p$table + ggplot2::labs(x = xlab)
+        ),
+        labels = "",
+        ncol = 1,
+        align = "v",
+        rel_heights = c(1, risk.table.ratio)
       ),
-      labels = "",
-      ncol = 1,
-      align = "v",
-      rel_heights = c(1, risk.table.ratio)
+      font
     ))
   }
   p$plot

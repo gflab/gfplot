@@ -87,6 +87,51 @@ gfplot_require <- function(package, hint = NULL) {
 # Which device routes can render this font in the current session? The answer
 # comes from the font registries rather than from opening devices, so the
 # check is cheap and has no side effects.
+
+# Session state for hints that would otherwise repeat for every text element.
+gfplot_state <- new.env(parent = emptyenv())
+
+# cowplot::plot_grid() measures text against the PostScript font database while
+# it assembles the risk table, which reports "font family 'Arial' not found in
+# PostScript font database" once per text element -- 79 lines for a two-group
+# curve. The measurement does not affect the figure, because rendering goes
+# through the device the user chooses, and gfplot_save() selects a device that
+# can render the font. The underlying fact is still worth stating, so the
+# repeated warnings become one actionable message per session.
+gfplot_font_hint_once <- function(font) {
+  key <- paste0("font_hint_", font)
+  if (isTRUE(gfplot_state[[key]])) {
+    return(invisible(FALSE))
+  }
+  gfplot_state[[key]] <- TRUE
+  cli::cli_inform(c(
+    "The base {.fn pdf} device cannot render {.val {font}}, so it may substitute a fallback font in vector PDF output.",
+    i = "Use {.run gfplot_save(plot, \"figure.pdf\")} to write through a device that can render it.",
+    i = "Or run {.run gfplot_font_setup()} to register the font with the device."
+  ))
+  invisible(TRUE)
+}
+
+# Assemble a plot while muffling cowplot's repeated font-database probe, and
+# report that probe once instead. Any other warning is left untouched.
+gfplot_assemble <- function(code, font) {
+  probed <- FALSE
+  result <- withCallingHandlers(
+    code,
+    warning = function(w) {
+      if (grepl("not found in PostScript font database", conditionMessage(w),
+                fixed = TRUE)) {
+        probed <<- TRUE
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+  if (probed) {
+    gfplot_font_hint_once(font)
+  }
+  result
+}
+
 gfplot_font_devices <- function(font = "Arial") {
   installed <- character()
   if (requireNamespace("systemfonts", quietly = TRUE)) {

@@ -12,11 +12,27 @@ scores, dimensionality-reduction projections, boxplots, correlation plots,
 lasso coefficient paths, enrichment plots, and immune-infiltration radar
 charts.
 }
-\details{
-Loading the package sets the global \code{ggplot2} theme to
-\code{\link[cowplot:theme_cowplot]{cowplot::theme_cowplot()}} unless \code{options(gfplot.set_theme = FALSE)} is
-set beforehand.
+\section{Figure style}{
+
+\code{gfplot} is opinionated about presentation. Figures use Arial and the
+\code{\link[cowplot:theme_cowplot]{cowplot::theme_cowplot()}} theme, which is the lab standard for publication
+output. Loading the package therefore sets the global \code{ggplot2} theme to
+\code{theme_cowplot()} as the session baseline: attaching \code{gfplot} is a
+statement that this style is the intended default, so every figure in the
+session — including figures drawn by other packages — starts from the same
+look.
+
+This is a deliberate choice rather than an incidental side effect. Set
+\code{options(gfplot.set_theme = FALSE)} before \code{library(gfplot)} to keep an
+existing theme; \code{ggplot2::theme_set()} can also be called afterwards to
+choose a different baseline.
+
+Font and colour follow the same principle. Arial is the default on every
+plotting function, and \code{\link[=get_color]{get_color()}} returns journal palettes, so figures
+are consistent across a manuscript without per-figure tuning. See
+\code{\link[=gfplot_save]{gfplot_save()}} for writing files that render the font correctly.
 }
+
 \seealso{
 Useful links:
 \itemize{

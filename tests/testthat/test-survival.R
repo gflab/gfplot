@@ -15,12 +15,40 @@ test_that("plot_KMCurve can build the risk table layout", {
   keep <- stats::complete.cases(lung[, c("time", "status", "sex")])
   clinical <- survival::Surv(lung$time[keep], lung$status[keep] == 2)
 
-  # survminer's risk table reports "Ignoring unknown labels" under ggplot2 4.0.
-  # The figure and its table are unaffected, so the message is tolerated here.
-  plot <- suppressWarnings(
-    plot_KMCurve(clinical, factor(lung$sex[keep]), risk.table = TRUE)
-  )
+  plot <- plot_KMCurve(clinical, factor(lung$sex[keep]), risk.table = TRUE)
   expect_s3_class(plot, "ggplot")
+})
+
+test_that("the font-database probe is reported instead of repeated", {
+  skip_if_not_installed("survminer")
+  lung <- survival::lung
+  keep <- stats::complete.cases(lung[, c("time", "status", "sex")])
+  clinical <- survival::Surv(lung$time[keep], lung$status[keep] == 2)
+
+  warnings <- character()
+  plot <- withCallingHandlers(
+    plot_KMCurve(clinical, factor(lung$sex[keep]), risk.table = TRUE),
+    warning = function(w) {
+      warnings <<- c(warnings, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+
+  expect_s3_class(plot, "ggplot")
+  # cowplot measures text once per element; the figure is unaffected by the
+  # probe, so it must not reach the user as dozens of warnings.
+  expect_false(any(grepl(
+    "not found in PostScript font database", warnings, fixed = TRUE
+  )))
+})
+
+test_that("the font hint is emitted at most once per session", {
+  state <- get("gfplot_state", envir = asNamespace("gfplot"))
+  rm(list = ls(state), envir = state)
+
+  expect_true(gfplot:::gfplot_font_hint_once("Arial"))
+  expect_false(gfplot:::gfplot_font_hint_once("Arial"))
+  expect_true(gfplot:::gfplot_font_hint_once("Some Other Font"))
 })
 
 test_that("hazard ratios come from a univariable Cox model", {
