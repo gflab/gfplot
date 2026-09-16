@@ -8,7 +8,8 @@ plot_UMAP(
   data,
   labs,
   title = "Evaluate the batch effect between groups",
-  palette = "nature"
+  palette = "house",
+  font = "Arial"
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ columns.}
 \item{title}{Plot title.}
 
 \item{palette}{Palette name passed to \code{\link[=get_color]{get_color()}}.}
+
+\item{font}{Font family used in the plot.}
 }
 \value{
 A \code{ggplot} object.

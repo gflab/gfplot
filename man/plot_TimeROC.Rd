@@ -9,8 +9,8 @@ plot_TimeROC(
   survival,
   time_points,
   groups,
-  palette = "jama",
-  legend.pos = c(0.4, 0.15),
+  palette = "house",
+  legend.pos = "bottom",
   title = NULL,
   font = "Arial",
   percent.style = FALSE
@@ -27,7 +27,8 @@ plot_TimeROC(
 
 \item{palette}{Palette name passed to \code{\link[=get_color]{get_color()}}.}
 
-\item{legend.pos}{Legend position as an x/y coordinate pair.}
+\item{legend.pos}{Legend position: a position such as \code{"bottom"}, or an x/y
+coordinate pair in panel units for a legend inside the panel.}
 
 \item{title}{Plot title.}
 

@@ -25,7 +25,7 @@ plot_GO <- function(gsea, n = 20, font = "Arial") {
   df.plot <- df.plot[seq_len(min(n, nrow(df.plot))), , drop = FALSE]
 
   ggplot2::ggplot(df.plot) +
-    cowplot::theme_cowplot(font_family = font) +
+    gfplot_theme(font = font) +
     ggplot2::geom_point(
       ggplot2::aes(
         x = .data$GeneRatio, y = .data$Term,

@@ -6,6 +6,18 @@ test_that("get_color returns the requested number of colours", {
   expect_equal(get_color(c("#111111", "#222222")), c("#111111", "#222222"))
 })
 
+test_that("get_color returns the house series ramp and extends it", {
+  expect_equal(unname(get_color("house", 3)), c("#0B4F6C", "#2A9D8F", "#B84A3A"))
+  expect_equal(
+    unname(get_color("fenggaolab", 2)),
+    unname(get_color("house", 2))
+  )
+  # More series than ramp entries are interpolated rather than recycled.
+  extended <- get_color("house", 10)
+  expect_length(extended, 10)
+  expect_equal(length(unique(extended)), 10)
+})
+
 test_that("generate_time_event censors observations beyond each limit", {
   clinical <- cbind(time = c(1, 5, 10), event = c(1, 0, 1))
   result <- generate_time_event(clinical, limits = c(3, 6), labels = c("y3", "y6"))

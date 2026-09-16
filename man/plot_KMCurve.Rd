@@ -15,7 +15,7 @@ plot_KMCurve(
   ylab = "Survival Probability",
   title = NULL,
   legend.pos = "top",
-  palette = "jama_classic",
+  palette = "house",
   risk.table = TRUE,
   risk.table.ratio = 0.4,
   anno.pos = "bottom",

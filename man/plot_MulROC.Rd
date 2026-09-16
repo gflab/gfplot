@@ -7,9 +7,9 @@
 plot_MulROC(
   scores,
   labels,
-  palette = "jama_classic",
+  palette = "house",
   color = NULL,
-  legend.pos = c(0.4, 0.15),
+  legend.pos = "bottom",
   title = NULL,
   font = "Arial",
   percent.style = FALSE
@@ -24,7 +24,8 @@ plot_MulROC(
 
 \item{color}{Optional vector of colours; overrides \code{palette}.}
 
-\item{legend.pos}{Legend position as an x/y coordinate pair.}
+\item{legend.pos}{Legend position: a position such as \code{"bottom"}, or an x/y
+coordinate pair in panel units for a legend inside the panel.}
 
 \item{title}{Plot title.}
 

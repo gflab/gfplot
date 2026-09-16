@@ -8,7 +8,7 @@ plot_barplot(
   value,
   group,
   comparisons = NULL,
-  palette = "jama_classic",
+  palette = "house",
   color = NULL,
   ylab = "Score",
   xlab = NULL,

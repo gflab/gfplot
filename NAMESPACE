@@ -2,8 +2,11 @@
 
 export(generate_time_event)
 export(get_color)
+export(gfplot_colors)
 export(gfplot_font_setup)
+export(gfplot_legend)
 export(gfplot_save)
+export(gfplot_theme)
 export(ggGSEA)
 export(plot_Boxplot)
 export(plot_GO)

@@ -4,12 +4,14 @@
 \alias{plot_lasso}
 \title{Plot lasso coefficient paths}
 \usage{
-plot_lasso(fit, s)
+plot_lasso(fit, s, font = "Arial")
 }
 \arguments{
 \item{fit}{A fitted model from \code{\link[glmnet:glmnet]{glmnet::glmnet()}}.}
 
 \item{s}{Selected value of the penalty parameter.}
+
+\item{font}{Font family used in the plot.}
 }
 \value{
 A \code{ggplot} object.

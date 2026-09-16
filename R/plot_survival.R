@@ -36,7 +36,7 @@
 plot_KMCurve <- function(clinical, labels, limit = NULL, annot = NULL,
                          color = NULL, font = "Arial", xlab = "Follow up",
                          ylab = "Survival Probability", title = NULL,
-                         legend.pos = "top", palette = "jama_classic",
+                         legend.pos = "top", palette = "house",
                          risk.table = TRUE, risk.table.ratio = 0.4,
                          anno.pos = "bottom", anno.x.shift = 0.5) {
   gfplot_require("survminer")
@@ -64,7 +64,12 @@ plot_KMCurve <- function(clinical, labels, limit = NULL, annot = NULL,
       labels <- factor(labels, levels = names(color))
     }
   } else {
-    color <- get_color(palette, n = length(unique(labels[complete])))
+    group_levels <- unique(as.character(labels[complete]))
+    color <- if (identical(tolower(palette), "house")) {
+      unname(gfplot_group_colors(group_levels))
+    } else {
+      get_color(palette, n = length(group_levels))
+    }
   }
 
   if (is.factor(labels)) {
@@ -87,7 +92,7 @@ plot_KMCurve <- function(clinical, labels, limit = NULL, annot = NULL,
     legend.labs = legend.labs,
     risk.table = risk.table,
     risk.table.y.text = FALSE,
-    ggtheme = cowplot::theme_cowplot()
+    ggtheme = gfplot_theme(font = font)
   )
   p$plot <- p$plot + ggplot2::ggtitle(title) +
     ggplot2::theme(

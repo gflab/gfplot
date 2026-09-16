@@ -6,6 +6,7 @@
 #'
 #' @param fit A fitted model from [glmnet::glmnet()].
 #' @param s Selected value of the penalty parameter.
+#' @param font Font family used in the plot.
 #'
 #' @return A `ggplot` object.
 #' @export
@@ -18,7 +19,7 @@
 #'   p <- plot_lasso(glmnet::glmnet(x, y), s = 0.05)
 #' }
 #' }
-plot_lasso <- function(fit, s) {
+plot_lasso <- function(fit, s, font = "Arial") {
   beta <- stats::coef(fit)
   tmp <- as.data.frame(as.matrix(beta))
   obj <- stats::coef(fit, s = s)
@@ -56,7 +57,7 @@ plot_lasso <- function(fit, s) {
       color = ggplot2::guide_legend(title = ""),
       linetype = ggplot2::guide_legend(title = "")
     ) +
-    ggplot2::theme_bw() +
+    gfplot_theme(font = font) +
     ggplot2::theme(
       legend.key.width = ggplot2::unit(3, "lines"),
       legend.position = "none"

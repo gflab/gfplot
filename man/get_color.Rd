@@ -8,7 +8,8 @@ get_color(palette, n = 6)
 }
 \arguments{
 \item{palette}{Palette name: \code{"nature"}, \code{"jco"}, \code{"lancet"}, \code{"jama"},
-\code{"jama_classic"}, or any other value, which selects the ColorBrewer
+\code{"jama_classic"}, \code{"house"} for the lab series ramp described in
+\code{\link[=gfplot_colors]{gfplot_colors()}}, or any other value, which selects the ColorBrewer
 \code{"Set1"} palette.}
 
 \item{n}{Number of colours to return.}
@@ -23,5 +24,6 @@ be used to pass colours through from a caller.
 }
 \examples{
 get_color("jama", 3)
+get_color("house", 4)
 get_color(c("#111111", "#222222"))
 }

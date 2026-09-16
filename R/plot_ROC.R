@@ -9,7 +9,8 @@
 #' @param force05 Flip markers whose area under the curve is below 0.5 so that
 #'   every curve is plotted above the diagonal.
 #' @param palette Palette name passed to [get_color()].
-#' @param legend.pos Legend position as an x/y coordinate pair.
+#' @param legend.pos Legend position: a position such as `"bottom"`, or an x/y
+#'   coordinate pair in panel units for a legend inside the panel.
 #' @param title Plot title.
 #' @param font Font family used in the plot.
 #' @param percent.style Label the axes as percentages.
@@ -21,8 +22,8 @@
 #' scores <- cbind(marker1 = rnorm(80), marker2 = rnorm(80))
 #' labels <- rep(c(0, 1), each = 40)
 #' p <- plot_ROC(scores, labels)
-plot_ROC <- function(scores, labels, force05 = FALSE, palette = "jama",
-                     legend.pos = c(0.2, 0.15), title = NULL, font = "Arial",
+plot_ROC <- function(scores, labels, force05 = FALSE, palette = "house",
+                     legend.pos = "bottom", title = NULL, font = "Arial",
                      percent.style = FALSE) {
   multiple <- !is.null(dim(scores)) && ncol(scores) > 1
   markers <- if (multiple) {
@@ -77,14 +78,17 @@ plot_ROC <- function(scores, labels, force05 = FALSE, palette = "jama",
   ) +
     ggplot2::geom_path() +
     ggplot2::labs(x = "1 - Specificity", y = "Sensitivity") +
-    ggplot2::coord_equal() +
+    ggplot2::coord_equal(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE) +
     ggplot2::geom_abline(
       intercept = 0, slope = 1, color = "grey50", linetype = "dashed"
     ) +
-    cowplot::theme_cowplot(font_family = font) +
+    gfplot_theme(font = font) +
     ggplot2::scale_color_manual(
       labels = annot,
-      values = get_color(palette, length(annot))
+      values = get_color(palette, length(annot)),
+      # The legend carries the area under the curve, so it is kept even for a
+      # single marker.
+      guide = gfplot_legend(annot, hide_single = FALSE)
     ) +
     ggplot2::theme(
       legend.position = legend.pos,
@@ -115,7 +119,7 @@ plot_ROC <- function(scores, labels, force05 = FALSE, palette = "jama",
 #' @param time_points Time points at which the curves are evaluated.
 #' @param groups Labels for the curves, one per time point.
 #' @param palette Palette name passed to [get_color()].
-#' @param legend.pos Legend position as an x/y coordinate pair.
+#' @inheritParams plot_ROC
 #' @param title Plot title.
 #' @param font Font family used in the plot.
 #' @param percent.style Label the axes as percentages.
@@ -131,7 +135,7 @@ plot_ROC <- function(scores, labels, force05 = FALSE, palette = "jama",
 #' }
 #' }
 plot_TimeROC <- function(scores, survival, time_points, groups,
-                         palette = "jama", legend.pos = c(0.4, 0.15),
+                         palette = "house", legend.pos = "bottom",
                          title = NULL, font = "Arial", percent.style = FALSE) {
   gfplot_require(
     "survivalROC",
@@ -163,8 +167,8 @@ plot_TimeROC <- function(scores, survival, time_points, groups,
     ggplot2::labs(
       x = "False Positive", y = "True Positive", title = title
     ) +
-    ggplot2::coord_equal() +
-    cowplot::theme_cowplot(font_family = font) +
+    ggplot2::coord_equal(xlim = c(0, 1), ylim = c(0, 1), expand = FALSE) +
+    gfplot_theme(font = font) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5),
       legend.position = legend.pos,
@@ -172,7 +176,8 @@ plot_TimeROC <- function(scores, survival, time_points, groups,
     ) +
     ggplot2::scale_color_manual(
       labels = annot,
-      values = get_color(palette, length(annot))
+      values = get_color(palette, length(annot)),
+      guide = gfplot_legend(annot, hide_single = FALSE)
     ) +
     ggplot2::geom_abline(
       intercept = 0, slope = 1, color = "grey50", linetype = "dashed"
@@ -196,7 +201,7 @@ plot_TimeROC <- function(scores, survival, time_points, groups,
 #' @param labels A list of binary outcomes, one per element of `scores`.
 #' @param palette Palette name passed to [get_color()].
 #' @param color Optional vector of colours; overrides `palette`.
-#' @param legend.pos Legend position as an x/y coordinate pair.
+#' @inheritParams plot_ROC
 #' @param title Plot title.
 #' @param font Font family used in the plot.
 #' @param percent.style Label the axes as percentages.
@@ -208,8 +213,8 @@ plot_TimeROC <- function(scores, survival, time_points, groups,
 #' scores <- list(cohortA = rnorm(60), cohortB = rnorm(60))
 #' labels <- list(rbinom(60, 1, 0.5), rbinom(60, 1, 0.5))
 #' p <- plot_MulROC(scores, labels)
-plot_MulROC <- function(scores, labels, palette = "jama_classic", color = NULL,
-                        legend.pos = c(0.4, 0.15), title = NULL,
+plot_MulROC <- function(scores, labels, palette = "house", color = NULL,
+                        legend.pos = "bottom", title = NULL,
                         font = "Arial", percent.style = FALSE) {
   df.plot <- do.call(rbind, lapply(seq_along(scores), function(i) {
     index <- !is.na(scores[[i]])
@@ -244,13 +249,17 @@ plot_MulROC <- function(scores, labels, palette = "jama_classic", color = NULL,
       x = "1 - Specificity", y = "Sensitivity", title = title
     ) +
     ggplot2::coord_equal() +
-    cowplot::theme_cowplot(font_family = font) +
+    gfplot_theme(font = font) +
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5),
       legend.position = legend.pos,
       legend.title = ggplot2::element_blank()
     ) +
-    ggplot2::scale_color_manual(labels = annot, values = color_value) +
+    ggplot2::scale_color_manual(
+      labels = annot,
+      values = color_value,
+      guide = gfplot_legend(annot, hide_single = FALSE)
+    ) +
     ggplot2::geom_abline(
       intercept = 0, slope = 1, color = "grey50", linetype = "dashed"
     )

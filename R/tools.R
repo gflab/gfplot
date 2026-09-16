@@ -5,7 +5,8 @@
 #' be used to pass colours through from a caller.
 #'
 #' @param palette Palette name: `"nature"`, `"jco"`, `"lancet"`, `"jama"`,
-#'   `"jama_classic"`, or any other value, which selects the ColorBrewer
+#'   `"jama_classic"`, `"house"` for the lab series ramp described in
+#'   [gfplot_colors()], or any other value, which selects the ColorBrewer
 #'   `"Set1"` palette.
 #' @param n Number of colours to return.
 #'
@@ -13,6 +14,7 @@
 #' @export
 #' @examples
 #' get_color("jama", 3)
+#' get_color("house", 4)
 #' get_color(c("#111111", "#222222"))
 get_color <- function(palette, n = 6) {
   if (length(palette) > 1) {
@@ -20,6 +22,15 @@ get_color <- function(palette, n = 6) {
   }
 
   switch(tolower(palette),
+    house = ,
+    fenggaolab = {
+      series <- unname(gfplot_colors("series"))
+      if (n <= length(series)) {
+        series[seq_len(n)]
+      } else {
+        grDevices::colorRampPalette(series)(n)
+      }
+    },
     nature = {
       (ggsci::pal_npg("nrc"))(n)
     },
@@ -316,6 +327,6 @@ gfplot_scientific_label <- function(value, digits = 3) {
 
 .onLoad <- function(libname, pkgname) {
   if (isTRUE(getOption("gfplot.set_theme", TRUE))) {
-    ggplot2::theme_set(cowplot::theme_cowplot())
+    ggplot2::theme_set(gfplot_theme())
   }
 }

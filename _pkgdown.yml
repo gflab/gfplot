@@ -33,5 +33,8 @@ reference:
   - title: Helpers
     contents:
       - get_color
+      - gfplot_colors
+      - gfplot_theme
+      - gfplot_legend
       - gfplot_font_setup
       - gfplot_save

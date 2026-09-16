@@ -1,3 +1,55 @@
+# gfplot 0.4.0
+
+Adds an explicit style layer, so the house style is defined in one place
+instead of being restated in every plotting function.
+
+## The style layer
+
+* `gfplot_colors()` returns colours by semantic role — `"model_curve"`,
+  `"comparator_curve"`, `"reference_line"`, `"text"`, `"grid"` — so a figure
+  says what a colour is for rather than naming a hex value. Override any role
+  for a session with `options(gfplot.palette = list(primary = "#123456"))`.
+* `gfplot_theme()` is the theme every figure is drawn with: bold axis titles,
+  a thin major grid, a panel border, and a horizontal legend under the panel.
+  Sizes derive from `base_size`, so one number rescales a figure.
+* `gfplot_legend()` wraps the legend onto as many rows as the number of series
+  needs, and hides it when a single series would only restate the axis.
+* `get_color("house")` returns the lab series ramp, and `plot_Boxplot()`,
+  `plot_RiskScore()`, and `plot_KMCurve()` map risk-group labels onto paired
+  colours regardless of spelling, so "Low Risk", "low-risk", and "low risk"
+  all take the model-curve colour.
+
+## Changed defaults
+
+* The default `palette` for every plotting function is now `"house"`, the lab
+  ramp. The journal palettes remain available by name.
+* `plot_ROC()`, `plot_TimeROC()`, and `plot_MulROC()` place the legend at the
+  bottom by default, where the area-under-the-curve labels have room, instead
+  of at a fixed point inside the panel. Pass an x/y coordinate pair to
+  `legend.pos` for an inside-panel legend.
+* ROC panels use a fixed 0 to 1 range with no expansion, so the diagonal meets
+  the corners.
+* `plot_PCA()`, `plot_UMAP()`, and `plot_lasso()` take a `font` argument, like
+  the other plotting functions.
+
+## Repairs
+
+* `gfplot_colors()` accepts a vector of roles, which previously failed with
+  "the condition has length > 1".
+
+## Tests
+
+One hundred and twenty-three tests, including coverage for role and alias
+resolution, palette overrides, risk-group colour matching, theme scaling, and
+legend wrapping.
+
+## Documentation
+
+The README is rewritten around how the package is actually used: what it is
+for, the house style and why it is opinionated, quick-start examples with
+figures produced by the package, a function and argument index, and a table
+of optional back ends with install commands.
+
 # gfplot 0.3.0
 
 Modernises the package around two goals: figures come out in Arial without

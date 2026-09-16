@@ -7,7 +7,7 @@
 plot_Boxplot(
   value,
   label,
-  palette = "nature",
+  palette = "house",
   title = NULL,
   ylab = "Expression",
   font = "Arial"

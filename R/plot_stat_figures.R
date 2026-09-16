@@ -34,7 +34,7 @@
 #'   )
 #' }
 plot_barplot <- function(value, group, comparisons = NULL,
-                         palette = "jama_classic", color = NULL,
+                         palette = "house", color = NULL,
                          ylab = "Score", xlab = NULL, title = NULL,
                          font = "Arial", label = "p.signif") {
   if (!is.factor(group)) {
@@ -55,11 +55,11 @@ plot_barplot <- function(value, group, comparisons = NULL,
     ggplot2::stat_summary(
       geom = "errorbar", fun.data = ggplot2::mean_se, width = 0.3
     ) +
-    ggplot2::scale_fill_manual(values = color) +
+    ggplot2::scale_fill_manual(values = color, guide = "none") +
     ggplot2::scale_y_continuous(
       expand = ggplot2::expansion(mult = c(0, 0.08))
     ) +
-    cowplot::theme_cowplot(font_family = font) +
+    gfplot_theme(font = font) +
     ggplot2::theme(
       legend.position = "none",
       axis.title.x = ggplot2::element_blank(),
@@ -129,12 +129,14 @@ plot_cor <- function(x, y, groups = NULL, xlab = NULL, ylab = NULL,
   if (!is.null(groups)) {
     df.plot$groups <- groups
     p$data <- df.plot
+    group_colors <- gfplot_group_colors(groups)
     p <- p +
       ggplot2::geom_point(
         ggplot2::aes(color = .data$groups), alpha = 0.5
       ) +
       ggplot2::scale_color_manual(
-        values = get_color("jama_classic", length(unique(groups)))
+        values = group_colors,
+        guide = gfplot_legend(names(group_colors))
       )
   } else {
     p <- p + ggplot2::geom_point(alpha = 0.5)
@@ -149,6 +151,7 @@ plot_cor <- function(x, y, groups = NULL, xlab = NULL, ylab = NULL,
 #' @param labs Group labels, one per sample.
 #' @param title Plot title.
 #' @param palette Palette name passed to [get_color()].
+#' @param font Font family used in the plot.
 #'
 #' @return A `ggplot` object.
 #' @export
@@ -157,7 +160,7 @@ plot_cor <- function(x, y, groups = NULL, xlab = NULL, ylab = NULL,
 #' p <- plot_PCA(matrix(rnorm(200), nrow = 20), rep(c("A", "B"), each = 10))
 plot_PCA <- function(data, labs,
                      title = "Evaluate the batch effect between groups",
-                     palette = "nature") {
+                     palette = "house", font = "Arial") {
   df <- data.frame(group = labs, data, check.names = FALSE)
   pca <- stats::prcomp(df[, -1])
   variance <- round(100 * pca$sdev^2 / sum(pca$sdev^2), 1)
@@ -173,14 +176,15 @@ plot_PCA <- function(data, labs,
     ggplot2::aes(x = .data$PC1, y = .data$PC2, color = .data$group)
   ) +
     ggplot2::geom_point() +
-    cowplot::theme_cowplot() +
+    gfplot_theme(font = font) +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
       plot.title = ggplot2::element_text(hjust = 0.5)
     ) +
     ggplot2::scale_color_manual(
       labels = groups,
-      values = get_color(palette, length(groups))
+      values = get_color(palette, length(groups)),
+      guide = gfplot_legend(groups)
     ) +
     ggplot2::labs(
       title = title,
@@ -204,7 +208,7 @@ plot_PCA <- function(data, labs,
 #' }
 plot_UMAP <- function(data, labs,
                       title = "Evaluate the batch effect between groups",
-                      palette = "nature") {
+                      palette = "house", font = "Arial") {
   gfplot_require("umap")
   embedding <- umap::umap(data)
   df_plot <- data.frame(
@@ -220,14 +224,15 @@ plot_UMAP <- function(data, labs,
     ggplot2::aes(x = .data$UMAP1, y = .data$UMAP2, color = .data$Group)
   ) +
     ggplot2::geom_point() +
-    cowplot::theme_cowplot() +
+    gfplot_theme(font = font) +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
       plot.title = ggplot2::element_text(hjust = 0.5)
     ) +
     ggplot2::scale_color_manual(
       labels = groups,
-      values = get_color(palette, length(groups))
+      values = get_color(palette, length(groups)),
+      guide = gfplot_legend(groups)
     ) +
     ggplot2::ggtitle(title)
 }
@@ -248,7 +253,7 @@ plot_UMAP <- function(data, labs,
 #' set.seed(1)
 #' p <- plot_RiskScore(rnorm(30), rbinom(30, 1, 0.4))
 plot_RiskScore <- function(rs, event, legend.position = c(0.2, 0.8),
-                           palette = "jama", color = NULL, font = "Arial") {
+                           palette = "house", color = NULL, font = "Arial") {
   if (is.logical(event)) {
     event <- factor(
       event,
@@ -267,7 +272,11 @@ plot_RiskScore <- function(rs, event, legend.position = c(0.2, 0.8),
   df$pt <- factor(df$pt, levels = as.character(df$pt))
 
   if (is.null(color)) {
-    color <- get_color(palette, nlevels(event))
+    color <- if (identical(tolower(palette), "house")) {
+      gfplot_group_colors(levels(event))
+    } else {
+      get_color(palette, nlevels(event))
+    }
   }
 
   ggplot2::ggplot(
@@ -275,7 +284,7 @@ plot_RiskScore <- function(rs, event, legend.position = c(0.2, 0.8),
     ggplot2::aes(x = .data$pt, y = .data$rs, fill = .data$event)
   ) +
     ggplot2::geom_bar(stat = "identity", alpha = 0.7) +
-    cowplot::theme_cowplot(font_family = font) +
+    gfplot_theme(font = font) +
     ggplot2::ylab("Risk score") +
     ggplot2::theme(
       plot.title = ggplot2::element_text(hjust = 0.5),
@@ -306,25 +315,30 @@ plot_RiskScore <- function(rs, event, legend.position = c(0.2, 0.8),
 #' @examples
 #' set.seed(1)
 #' p <- plot_Boxplot(c(rnorm(20), rnorm(20, 1)), rep(c("A", "B"), each = 20))
-plot_Boxplot <- function(value, label, palette = "nature", title = NULL,
+plot_Boxplot <- function(value, label, palette = "house", title = NULL,
                          ylab = "Expression", font = "Arial") {
   if (!is.factor(label)) {
     label <- factor(label)
   }
   df <- data.frame(value = value, label = label)
+  box_colors <- if (identical(tolower(palette), "house")) {
+    gfplot_group_colors(levels(label))
+  } else {
+    get_color(palette, nlevels(label))
+  }
 
   p <- ggplot2::ggplot(
     df,
     ggplot2::aes(x = .data$label, y = .data$value, color = .data$label)
   ) +
     ggplot2::geom_boxplot() +
-    cowplot::theme_cowplot(font_family = font) +
+    gfplot_theme(font = font) +
     ggplot2::theme(
       legend.position = "none",
       plot.title = ggplot2::element_text(hjust = 0.5)
     ) +
     ggplot2::scale_color_manual(
-      values = get_color(palette, nlevels(label))
+      values = box_colors
     ) +
     ggplot2::labs(x = NULL, y = ylab, title = title)
 
