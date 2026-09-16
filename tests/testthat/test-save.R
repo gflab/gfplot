@@ -65,7 +65,12 @@ test_that("provenance records what produced the figure", {
   expect_equal(record$figure$family, "forest")
   expect_equal(record$font, "Arial")
   expect_equal(record$environment$gfplot, as.character(utils::packageVersion("gfplot")))
-  expect_match(record$environment$r, "^R version")
+  # R reports itself as "R version x.y.z" on a release and "R Under
+  # development (unstable) (...)" on devel, and both are the true
+  # environment the figure was drawn in, so the assertion is that the field
+  # names R and carries a version rather than that it matches one wording.
+  expect_match(record$environment$r, "^R ")
+  expect_match(record$environment$r, "[0-9]+\\.[0-9]+")
   # The hash is of the closed file, so it has to be present and non-empty.
   if (requireNamespace("digest", quietly = TRUE)) {
     expect_equal(record$output$sha256, digest::digest(file = path, algo = "sha256"))
