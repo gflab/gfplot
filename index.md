@@ -46,6 +46,20 @@ it.
 
 ## Installation
 
+Prebuilt binaries for Linux, macOS, and Windows come from
+[r-universe](https://gflab.r-universe.dev/gfplot), so no compiler is
+needed:
+
+``` r
+
+install.packages(
+  "gfplot",
+  repos = c(gflab = "https://gflab.r-universe.dev", CRAN = "https://cloud.r-project.org")
+)
+```
+
+Installing from source through GitHub also works:
+
 ``` r
 
 # install.packages("remotes")
