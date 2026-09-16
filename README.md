@@ -3,7 +3,7 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/gflab/gfplot/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gflab/gfplot/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/gflab/gfplot/actions/workflows/pkgdown.yaml/badge.svg)](https://gflab.github.io/gfplot/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gflab/gfplot/blob/master/LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/gflab/gfplot/blob/master/LICENSE.md)
 <!-- badges: end -->
 
 Publication-ready figures for cancer bioinformatics, in the style the lab
@@ -271,4 +271,8 @@ documentation for every function is on the
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Apache License 2.0. See [LICENSE.md](LICENSE.md). Copyright 2026 FengGao Lab
+contributors.
+
+Versions before `0.4.1` were released under the MIT licence; those tags keep
+the terms they were published with.

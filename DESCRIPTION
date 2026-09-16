@@ -1,7 +1,7 @@
 Package: gfplot
 Type: Package
 Title: Publication-Ready Figures for Cancer Bioinformatics
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: person("Feng", "Gao", email = "gaofeng21cn@gmail.com",
     role = c("aut", "cre"))
 Description: A compact plotting toolkit for cancer bioinformatics figures.
@@ -11,7 +11,7 @@ Description: A compact plotting toolkit for cancer bioinformatics figures.
     lasso coefficient paths, enrichment plots, and immune-infiltration
     radar charts. Palette helpers return colour-blind-friendly colours in
     journal styles.
-License: MIT + file LICENSE
+License: Apache License (>= 2)
 URL: https://github.com/gflab/gfplot, https://gflab.github.io/gfplot/
 BugReports: https://github.com/gflab/gfplot/issues
 Encoding: UTF-8

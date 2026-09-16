@@ -1,3 +1,11 @@
+# gfplot 0.4.1
+
+* Relicensed from MIT to the Apache License 2.0, the default for lab
+  open-source software. The R package metadata, `CITATION.cff`, and the README
+  all report the new licence.
+* Versions released before this one were published under MIT and keep those
+  terms; the `v0.1.0` through `v0.4.0` tags are unchanged.
+
 # gfplot 0.4.0
 
 Adds an explicit style layer, so the house style is defined in one place
