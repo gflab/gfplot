@@ -10,6 +10,12 @@ test_that("gfplot_families indexes what the package can draw", {
   expect_true(all(families$type %in% c("spec", "function")))
   # Every family names the function a user would call.
   expect_false(anyNA(families$function_name))
+  # No two categories differ only by capitalisation, so the index does not
+  # split one category in two.
+  expect_equal(
+    length(unique(tolower(families$category))),
+    length(unique(families$category))
+  )
 })
 
 test_that("gfplot_families filters by category", {

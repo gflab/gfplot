@@ -162,7 +162,7 @@ gfplot_simple_family <- function(title, category, fn, required,
 # so that a future migration has an obvious place to land.
 gfplot_function_families <- function() {
   list(
-    c("plot_KMCurve", "Survival", "Grouped Kaplan-Meier curve with a risk table"),
+    c("plot_KMCurve", "Time-to-Event", "Grouped Kaplan-Meier curve with a risk table"),
     c("plot_ROC", "Discrimination", "ROC curves with areas under the curve"),
     c("plot_TimeROC", "Discrimination", "Time-dependent ROC curves"),
     c("plot_MulROC", "Discrimination", "ROC curves from separate cohorts"),
@@ -170,14 +170,14 @@ gfplot_function_families <- function() {
     c("plot_Boxplot", "Sample-level", "Grouped boxplot"),
     c("plot_barplot", "Sample-level", "Grouped bar plot of means"),
     c("plot_cor", "Sample-level", "Correlation scatter with regression"),
-    c("plot_PCA", "Data geometry", "Principal component projection"),
-    c("plot_UMAP", "Data geometry", "UMAP projection"),
-    c("plot_tsne", "Data geometry", "t-SNE projection"),
+    c("plot_PCA", "Data Geometry", "Principal component projection"),
+    c("plot_UMAP", "Data Geometry", "UMAP projection"),
+    c("plot_tsne", "Data Geometry", "t-SNE projection"),
     c("plot_lasso", "Effect Estimate", "Lasso coefficient paths"),
-    c("plot_GO", "Enrichment", "Enriched term dot plot"),
-    c("plot_immune", "Enrichment", "Immune infiltration radar chart"),
-    c("viewGSEA", "Enrichment", "Running enrichment score"),
-    c("ggGSEA", "Enrichment", "Running enrichment score from a ranked list")
+    c("plot_GO", "Genomic and Omics", "Enriched term dot plot"),
+    c("plot_immune", "Genomic and Omics", "Immune infiltration radar chart"),
+    c("viewGSEA", "Genomic and Omics", "Running enrichment score"),
+    c("ggGSEA", "Genomic and Omics", "Running enrichment score from a ranked list")
   )
 }
 

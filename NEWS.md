@@ -60,6 +60,9 @@ unexpected files appear.
 
 ## Repairs
 
+* Figure categories are spelled one way, so `gfplot_families()` no longer
+  splits a category in two over capitalisation or lists survival figures under
+  both "Survival" and "Time-to-Event".
 * `gfplot_response_colors()` errored on a response category it did not know,
   which broke `plot_waterfall()` for caller-supplied categories.
 * `plot_waterfall()` silently recycled a `patient` or `category` vector of the
