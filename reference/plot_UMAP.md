@@ -10,7 +10,8 @@ plot_UMAP(
   labs,
   title = "Evaluate the batch effect between groups",
   palette = "house",
-  font = "Arial"
+  font = "Arial",
+  ...
 )
 ```
 
@@ -36,6 +37,11 @@ plot_UMAP(
 - font:
 
   Font family used in the plot.
+
+- ...:
+
+  Passed to
+  [`plot_embedding()`](https://gflab.github.io/gfplot/reference/plot_embedding.md).
 
 ## Value
 

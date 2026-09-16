@@ -17,7 +17,7 @@ back to a default."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,7 @@ back to a default."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Save a figure using a device that can render the requested font</h1>
-      <small class="dont-index">Source: <a href="https://github.com/gflab/gfplot/blob/v0.5.0/R/tools.R" class="external-link"><code>R/tools.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/gflab/gfplot/blob/master/R/tools.R" class="external-link"><code>R/tools.R</code></a></small>
       <div class="d-none name"><code>gfplot_save.Rd</code></div>
     </div>
 
@@ -57,10 +57,13 @@ back to a default.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gfplot_save</span><span class="op">(</span></span>
 <span>  <span class="va">plot</span>,</span>
 <span>  <span class="va">filename</span>,</span>
-<span>  width <span class="op">=</span> <span class="fl">7</span>,</span>
-<span>  height <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  width <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  height <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dpi <span class="op">=</span> <span class="fl">300</span>,</span>
+<span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  font <span class="op">=</span> <span class="st">"Arial"</span>,</span>
+<span>  provenance <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  call <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -80,15 +83,36 @@ draws it.</p></dd>
 
 
 <dt id="arg-width-height">width, height<a class="anchor" aria-label="anchor" href="#arg-width-height"></a></dt>
-<dd><p>Size in inches.</p></dd>
+<dd><p>Size in inches. Default to 7 by 5, or to the <code>size</code>
+preset when one is given.</p></dd>
 
 
 <dt id="arg-dpi">dpi<a class="anchor" aria-label="anchor" href="#arg-dpi"></a></dt>
 <dd><p>Resolution for raster output.</p></dd>
 
 
+<dt id="arg-size">size<a class="anchor" aria-label="anchor" href="#arg-size"></a></dt>
+<dd><p>Journal size preset, used when <code>width</code> and <code>height</code> are not
+given: <code>"single"</code> for one column, <code>"onehalf"</code> for 1.5 columns, <code>"double"</code>
+for the full text width, or <code>"slide"</code> for a 16:9 presentation. The
+journal widths follow the common 85 mm, 114 mm, and 170 mm conventions.
+Supplying <code>width</code> or <code>height</code> overrides the preset for that dimension.</p></dd>
+
+
 <dt id="arg-font">font<a class="anchor" aria-label="anchor" href="#arg-font"></a></dt>
 <dd><p>Font family passed to the device unchanged.</p></dd>
+
+
+<dt id="arg-provenance">provenance<a class="anchor" aria-label="anchor" href="#arg-provenance"></a></dt>
+<dd><p>Write a <code>.json</code> file next to the figure recording what
+produced it: the figure family or call, the package and R versions, the
+output size and device, and the SHA-256 of the written file. This is what
+makes a figure in a manuscript traceable to the code that drew it.</p></dd>
+
+
+<dt id="arg-call">call<a class="anchor" aria-label="anchor" href="#arg-call"></a></dt>
+<dd><p>The call to record in the provenance file. Defaults to the
+function as it was invoked.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -97,7 +121,8 @@ draws it.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>filename</code>, invisibly.</p>
+    <p><code>filename</code>, invisibly. The path of the provenance file is attached
+as the <code>"provenance"</code> attribute when one is written.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

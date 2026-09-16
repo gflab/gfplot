@@ -13,7 +13,7 @@ called directly.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,7 @@ called directly.'></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>List the figures gfplot can draw</h1>
-      <small class="dont-index">Source: <a href="https://github.com/gflab/gfplot/blob/v0.5.0/R/spec.R" class="external-link"><code>R/spec.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/gflab/gfplot/blob/master/R/spec.R" class="external-link"><code>R/spec.R</code></a></small>
       <div class="d-none name"><code>gfplot_families.Rd</code></div>
     </div>
 
@@ -73,25 +73,20 @@ draws it, and an example call.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">gfplot_families</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 16 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 27 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    family         title    category type  status description function_name call </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> plot_PCA       Princip… Data ge… func… stable <span style="color: #949494;">""</span>          plot_PCA      plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> plot_UMAP      UMAP pr… Data ge… func… stable <span style="color: #949494;">""</span>          plot_UMAP     plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> plot_MulROC    ROC cur… Discrim… func… stable <span style="color: #949494;">""</span>          plot_MulROC   plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> plot_ROC       ROC cur… Discrim… func… stable <span style="color: #949494;">""</span>          plot_ROC      plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> plot_TimeROC   Time-de… Discrim… func… stable <span style="color: #949494;">""</span>          plot_TimeROC  plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> forest         Forest … Effect … spec  stable <span style="color: #949494;">"</span>Effect es… plot_forest   plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> plot_lasso     Lasso c… Effect … func… stable <span style="color: #949494;">""</span>          plot_lasso    plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ggGSEA         Running… Enrichm… func… stable <span style="color: #949494;">""</span>          ggGSEA        ggGS…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> plot_GO        Enriche… Enrichm… func… stable <span style="color: #949494;">""</span>          plot_GO       plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> plot_immune    Immune … Enrichm… func… stable <span style="color: #949494;">""</span>          plot_immune   plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> viewGSEA       Running… Enrichm… func… stable <span style="color: #949494;">""</span>          viewGSEA      view…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> plot_Boxplot   Grouped… Sample-… func… stable <span style="color: #949494;">""</span>          plot_Boxplot  plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> plot_RiskScore Patient… Sample-… func… stable <span style="color: #949494;">""</span>          plot_RiskSco… plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> plot_barplot   Grouped… Sample-… func… stable <span style="color: #949494;">""</span>          plot_barplot  plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> plot_cor       Correla… Sample-… func… stable <span style="color: #949494;">""</span>          plot_cor      plot…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> plot_KMCurve   Grouped… Survival func… stable <span style="color: #949494;">""</span>          plot_KMCurve  plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> waterfall      Waterfa… Clinica… spec  stable <span style="color: #949494;">"</span>Patients … plot_waterfa… plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> decision_curve Decisio… Clinica… spec  stable <span style="color: #949494;">"</span>Net benef… plot_decisio… plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> embedding      Embeddi… Data Ge… spec  stable <span style="color: #949494;">"</span>Grouped s… plot_embeddi… plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> plot_PCA       Princip… Data ge… func… stable <span style="color: #949494;">""</span>          plot_PCA      plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> plot_UMAP      UMAP pr… Data ge… func… stable <span style="color: #949494;">""</span>          plot_UMAP     plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> plot_tsne      t-SNE p… Data ge… func… stable <span style="color: #949494;">""</span>          plot_tsne     plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> plot_MulROC    ROC cur… Discrim… func… stable <span style="color: #949494;">""</span>          plot_MulROC   plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> plot_ROC       ROC cur… Discrim… func… stable <span style="color: #949494;">""</span>          plot_ROC      plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> plot_TimeROC   Time-de… Discrim… func… stable <span style="color: #949494;">""</span>          plot_TimeROC  plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> forest         Forest … Effect … spec  stable <span style="color: #949494;">"</span>Effect es… plot_forest   plot…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 17 more rows</span></span>
 <span class="r-in"><span><span class="fu">gfplot_families</span><span class="op">(</span><span class="st">"Effect Estimate"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   family     title         category type  status description function_name call </span>

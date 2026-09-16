@@ -123,10 +123,16 @@ Every function returns a `ggplot` object.
 |----|----|
 | Survival | [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md), [`generate_time_event()`](https://gflab.github.io/gfplot/reference/generate_time_event.md) |
 | Discrimination | [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md), [`plot_TimeROC()`](https://gflab.github.io/gfplot/reference/plot_TimeROC.md), [`plot_MulROC()`](https://gflab.github.io/gfplot/reference/plot_MulROC.md) |
-| Effect estimates | [`plot_forest()`](https://gflab.github.io/gfplot/reference/plot_forest.md) |
-| Sample-level figures | [`plot_RiskScore()`](https://gflab.github.io/gfplot/reference/plot_RiskScore.md), [`plot_Boxplot()`](https://gflab.github.io/gfplot/reference/plot_Boxplot.md), [`plot_barplot()`](https://gflab.github.io/gfplot/reference/plot_barplot.md), [`plot_cor()`](https://gflab.github.io/gfplot/reference/plot_cor.md) |
-| Projections and models | [`plot_PCA()`](https://gflab.github.io/gfplot/reference/plot_PCA.md), [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md), [`plot_lasso()`](https://gflab.github.io/gfplot/reference/plot_lasso.md) |
-| Enrichment and immune figures | [`plot_GO()`](https://gflab.github.io/gfplot/reference/plot_GO.md), [`viewGSEA()`](https://gflab.github.io/gfplot/reference/viewGSEA.md), [`ggGSEA()`](https://gflab.github.io/gfplot/reference/ggGSEA.md), [`plot_immune()`](https://gflab.github.io/gfplot/reference/plot_immune.md) |
+| Prediction performance | [`plot_pr_curve()`](https://gflab.github.io/gfplot/reference/plot_pr_curve.md), [`plot_calibration()`](https://gflab.github.io/gfplot/reference/plot_calibration.md), [`plot_decision_curve()`](https://gflab.github.io/gfplot/reference/plot_decision_curve.md) |
+| Clinical utility | [`plot_decision_curve()`](https://gflab.github.io/gfplot/reference/plot_decision_curve.md) |
+| Time-to-event | [`plot_cumulative_incidence()`](https://gflab.github.io/gfplot/reference/plot_cumulative_incidence.md) |
+| Effect estimates | [`plot_forest()`](https://gflab.github.io/gfplot/reference/plot_forest.md), [`plot_lasso()`](https://gflab.github.io/gfplot/reference/plot_lasso.md) |
+| Sample-level figures | [`plot_RiskScore()`](https://gflab.github.io/gfplot/reference/plot_RiskScore.md), [`plot_Boxplot()`](https://gflab.github.io/gfplot/reference/plot_Boxplot.md), [`plot_barplot()`](https://gflab.github.io/gfplot/reference/plot_barplot.md), [`plot_cor()`](https://gflab.github.io/gfplot/reference/plot_cor.md), [`plot_violin()`](https://gflab.github.io/gfplot/reference/plot_violin.md) |
+| Projections | [`plot_embedding()`](https://gflab.github.io/gfplot/reference/plot_embedding.md), [`plot_PCA()`](https://gflab.github.io/gfplot/reference/plot_PCA.md), [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md), [`plot_tsne()`](https://gflab.github.io/gfplot/reference/plot_tsne.md) |
+| Matrix pattern | [`plot_heatmap()`](https://gflab.github.io/gfplot/reference/plot_heatmap.md), [`plot_confusion()`](https://gflab.github.io/gfplot/reference/plot_confusion.md) |
+| Genomic and omics | [`plot_volcano()`](https://gflab.github.io/gfplot/reference/plot_volcano.md), [`plot_GO()`](https://gflab.github.io/gfplot/reference/plot_GO.md) |
+| Trial response | [`plot_waterfall()`](https://gflab.github.io/gfplot/reference/plot_waterfall.md) |
+| Enrichment and immune | [`viewGSEA()`](https://gflab.github.io/gfplot/reference/viewGSEA.md), [`ggGSEA()`](https://gflab.github.io/gfplot/reference/ggGSEA.md), [`plot_immune()`](https://gflab.github.io/gfplot/reference/plot_immune.md) |
 | Style and output | [`get_color()`](https://gflab.github.io/gfplot/reference/get_color.md), [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md), [`gfplot_font_setup()`](https://gflab.github.io/gfplot/reference/gfplot_font_setup.md) |
 
 [`gfplot_families()`](https://gflab.github.io/gfplot/reference/gfplot_families.md)
@@ -197,6 +203,57 @@ gfplot_save(gfplot_render(spec), "figure2.png", width = 7, height = 4)
 [`gfplot_families()`](https://gflab.github.io/gfplot/reference/gfplot_families.md)
 lists every figure the package can draw and how to call it.
 
+## Prediction performance and clinical utility
+
+[`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md)
+answers whether a model can rank patients. Three companion figures
+answer what follows, which is usually the harder question:
+
+``` r
+
+# Precision against recall, for a rare positive class
+plot_pr_curve(scores, outcome)
+
+# Is the model honest about the probability it predicts?
+plot_calibration(probability, outcome, bins = 10)
+
+# Does acting on it do more good than harm?
+plot_decision_curve(probability, outcome)
+```
+
+[`plot_calibration()`](https://gflab.github.io/gfplot/reference/plot_calibration.md)
+bins the predictions into quantiles and draws binomial intervals, so
+each point rests on a similar number of observations.
+[`plot_decision_curve()`](https://gflab.github.io/gfplot/reference/plot_decision_curve.md)
+draws the net benefit against treating everyone and treating no one.
+
+## Competing risks
+
+When a patient can experience one of several mutually exclusive events,
+a Kaplan-Meier estimate of a single event is biased upward: patients who
+had a competing event are still counted as being at risk of the event of
+interest.
+[`plot_cumulative_incidence()`](https://gflab.github.io/gfplot/reference/plot_cumulative_incidence.md)
+uses the cumulative incidence function instead.
+
+``` r
+
+# status: 0 censored, 1 event of interest, 2 competing event
+plot_cumulative_incidence(time, status, group = arm)
+```
+
+## Other figures
+
+``` r
+
+plot_volcano(effect, p_value, label)          # differential analysis
+plot_waterfall(response)                       # ranked patient response
+plot_heatmap(matrix, diverging = TRUE)         # correlation or signature matrix
+plot_confusion(predicted, actual, positive = 1)# classification counts
+plot_violin(value, group)                      # distributions with observations
+plot_embedding(data, groups, method = "tsne")  # PCA, t-SNE, or UMAP
+```
+
 ## Save a figure
 
 [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md)
@@ -209,6 +266,39 @@ supported.
 gfplot_save(p, "figure1.png", width = 7, height = 5, dpi = 300)
 gfplot_save(p, "figure1.pdf", width = 7, height = 5)
 ```
+
+Use a journal size preset to produce the figure at the width it will be
+printed, rather than scaling it afterwards:
+
+``` r
+
+gfplot_save(p, "figure2.png", size = "single")   # 85 mm, one column
+gfplot_save(p, "figure2.png", size = "onehalf")  # 114 mm, 1.5 columns
+gfplot_save(p, "figure2.png", size = "double")   # 170 mm, full width
+gfplot_save(p, "figure2.png", size = "slide")    # 16:9 presentation
+```
+
+An explicit `width` or `height` overrides the preset for that dimension.
+
+Add `provenance = TRUE` to write a `.provenance.json` beside the figure
+recording what produced it:
+
+``` r
+
+gfplot_save(p, "figure2.png", size = "double", provenance = TRUE)
+```
+
+``` json
+{
+  "schema": "gfplot.provenance.v1",
+  "figure": { "kind": "spec", "family": "forest" },
+  "output": { "format": "png", "width_in": 6.69, "sha256": "…" },
+  "environment": { "gfplot": "0.6.0", "r": "R version 4.6.0" }
+}
+```
+
+That record is what lets a figure in a manuscript be traced back to the
+code and versions that drew it.
 
 Figures are drawn when they are printed, so a plot object is only turned
 into a file by
@@ -305,12 +395,15 @@ and report what to install, so
 |----|----|----|
 | [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md) | survminer | `install.packages("survminer")` |
 | [`plot_TimeROC()`](https://gflab.github.io/gfplot/reference/plot_TimeROC.md) | survivalROC | `install.packages("survivalROC")` |
-| [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md) | umap | `install.packages("umap")` |
+| [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md), `plot_embedding(method = "umap")` | umap | `install.packages("umap")` |
+| [`plot_tsne()`](https://gflab.github.io/gfplot/reference/plot_tsne.md) | Rtsne | `install.packages("Rtsne")` |
 | [`plot_lasso()`](https://gflab.github.io/gfplot/reference/plot_lasso.md) | glmnet | `install.packages("glmnet")` |
 | [`plot_immune()`](https://gflab.github.io/gfplot/reference/plot_immune.md) | ggradar | `remotes::install_github("ricardo-bion/ggradar")` |
 | [`viewGSEA()`](https://gflab.github.io/gfplot/reference/viewGSEA.md), [`ggGSEA()`](https://gflab.github.io/gfplot/reference/ggGSEA.md) | DOSE, fgsea | `BiocManager::install(c("DOSE", "fgsea"))` |
-| [`plot_barplot()`](https://gflab.github.io/gfplot/reference/plot_barplot.md) significance | ggpubr | `install.packages("ggpubr")` |
+| [`plot_barplot()`](https://gflab.github.io/gfplot/reference/plot_barplot.md), [`plot_violin()`](https://gflab.github.io/gfplot/reference/plot_violin.md) significance | ggpubr, ggsignif | `install.packages(c("ggpubr", "ggsignif"))` |
 | [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md) raster output | ragg | `install.packages("ragg")` |
+| `gfplot_save(provenance = TRUE)` hashing | digest | `install.packages("digest")` |
+| [`plot_forest()`](https://gflab.github.io/gfplot/reference/plot_forest.md) from a clinstats table | clinstats | `remotes::install_github("gflab/clinstats")` |
 
 ## Citation
 

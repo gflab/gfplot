@@ -1,14 +1,16 @@
-# Principal component analysis plot
+# t-SNE projection of samples coloured by group
 
-Principal component analysis plot
+t-SNE projection of samples coloured by group
 
 ## Usage
 
 ``` r
-plot_PCA(
+plot_tsne(
   data,
   labs,
   title = "Evaluate the batch effect between groups",
+  perplexity = 30,
+  seed = 1,
   palette = "house",
   font = "Arial",
   ...
@@ -28,6 +30,15 @@ plot_PCA(
 - title:
 
   Plot title.
+
+- perplexity:
+
+  Perplexity for the t-SNE embedding.
+
+- seed:
+
+  Optional seed; t-SNE is stochastic, so a seed makes a figure
+  reproducible.
 
 - palette:
 
@@ -51,6 +62,10 @@ A `ggplot` object.
 ## Examples
 
 ``` r
-set.seed(1)
-p <- plot_PCA(matrix(rnorm(200), nrow = 20), rep(c("A", "B"), each = 10))
+# \donttest{
+if (requireNamespace("Rtsne", quietly = TRUE)) {
+  set.seed(1)
+  p <- plot_tsne(matrix(rnorm(200), nrow = 20), rep(c("A", "B"), each = 10))
+}
+# }
 ```

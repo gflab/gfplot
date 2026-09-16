@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,16 +29,80 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/gflab/gfplot/blob/v0.5.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/gflab/gfplot/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="gfplot-060">gfplot 0.6.0<a class="anchor" aria-label="anchor" href="#gfplot-060"></a></h2>
+<p>Nine new figure families, journal size presets, and a provenance record. Every existing function keeps its name and arguments.</p>
+<div class="section level3">
+<h3 id="new-figure-families-0-6-0">New figure families<a class="anchor" aria-label="anchor" href="#new-figure-families-0-6-0"></a></h3>
+<p>The Prediction Performance category is now complete, and five other categories gain their first entries.</p>
+<table class="table"><colgroup><col width="50%"><col width="50%"></colgroup><thead><tr><th>Family</th>
+<th>What it answers</th>
+</tr></thead><tbody><tr><td><code><a href="../reference/plot_pr_curve.html">plot_pr_curve()</a></code></td>
+<td>Precision against recall, for a rare positive class where the ROC curve can look encouraging</td>
+</tr><tr><td><code><a href="../reference/plot_calibration.html">plot_calibration()</a></code></td>
+<td>Whether a model is honest about the probability it predicts, not only about the ranking</td>
+</tr><tr><td><code><a href="../reference/plot_decision_curve.html">plot_decision_curve()</a></code></td>
+<td>Whether acting on the model does more good than harm, against treating everyone and no one</td>
+</tr><tr><td><code><a href="../reference/plot_cumulative_incidence.html">plot_cumulative_incidence()</a></code></td>
+<td>The probability of each event when competing events prevent the one of interest</td>
+</tr><tr><td><code><a href="../reference/plot_volcano.html">plot_volcano()</a></code></td>
+<td>Effect size against significance, for a differential analysis</td>
+</tr><tr><td><code><a href="../reference/plot_waterfall.html">plot_waterfall()</a></code></td>
+<td>Patients ranked by response, with the RECIST-style cut-offs</td>
+</tr><tr><td><code><a href="../reference/plot_heatmap.html">plot_heatmap()</a></code></td>
+<td>A matrix of values, with a diverging scale centred where it belongs</td>
+</tr><tr><td><code><a href="../reference/plot_confusion.html">plot_confusion()</a></code></td>
+<td>Predicted against actual class, as counts or row percentages</td>
+</tr><tr><td><code><a href="../reference/plot_violin.html">plot_violin()</a></code></td>
+<td>Grouped distributions with the observations shown</td>
+</tr></tbody></table><p><code><a href="../reference/plot_embedding.html">plot_embedding()</a></code> generalises the projection plots and the wrappers now delegate to it, so PCA, t-SNE, and UMAP share one implementation:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">groups</span>, method <span class="op">=</span> <span class="st">"tsne"</span>, perplexity <span class="op">=</span> <span class="fl">30</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_PCA.html">plot_PCA</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">groups</span><span class="op">)</span>   <span class="co"># same function, method = "pca"</span></span>
+<span><span class="fu"><a href="../reference/plot_UMAP.html">plot_UMAP</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">groups</span><span class="op">)</span>  <span class="co"># same function, method = "umap"</span></span>
+<span><span class="fu"><a href="../reference/plot_tsne.html">plot_tsne</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">groups</span><span class="op">)</span>  <span class="co"># same function, method = "tsne"</span></span></code></pre></div>
+<p>All nine are available through the specification layer as well, and <code><a href="../reference/gfplot_families.html">gfplot_families()</a></code> now indexes 26 figures across 10 categories.</p>
+</div>
+<div class="section level3">
+<h3 id="journal-size-presets-0-6-0">Journal size presets<a class="anchor" aria-label="anchor" href="#journal-size-presets-0-6-0"></a></h3>
+<p><code><a href="../reference/gfplot_save.html">gfplot_save()</a></code> takes a <code>size</code> argument using the common column widths, so a figure is produced at the size the journal will print it:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"figure2.png"</span>, size <span class="op">=</span> <span class="st">"single"</span><span class="op">)</span>   <span class="co"># 85 mm</span></span>
+<span><span class="fu"><a href="../reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"figure2.png"</span>, size <span class="op">=</span> <span class="st">"onehalf"</span><span class="op">)</span>  <span class="co"># 114 mm</span></span>
+<span><span class="fu"><a href="../reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"figure2.png"</span>, size <span class="op">=</span> <span class="st">"double"</span><span class="op">)</span>   <span class="co"># 170 mm</span></span>
+<span><span class="fu"><a href="../reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"figure2.png"</span>, size <span class="op">=</span> <span class="st">"slide"</span><span class="op">)</span>    <span class="co"># 16:9</span></span></code></pre></div>
+<p>An explicit <code>width</code> or <code>height</code> still wins, so a standard width can be paired with a chosen height. Without a preset the previous 7 by 5 inch default applies, so existing calls are unaffected.</p>
+</div>
+<div class="section level3">
+<h3 id="provenance-0-6-0">Provenance<a class="anchor" aria-label="anchor" href="#provenance-0-6-0"></a></h3>
+<p><code>gfplot_save(..., provenance = TRUE)</code> writes a <code>.provenance.json</code> next to the figure recording what produced it: the figure family when the plot came from a specification, the package and R versions, the output size, device, and font, and the SHA-256 of the written file. That is what makes a figure in a manuscript traceable to the code that drew it. It is off by default so no unexpected files appear.</p>
+</div>
+<div class="section level3">
+<h3 id="repairs-0-6-0">Repairs<a class="anchor" aria-label="anchor" href="#repairs-0-6-0"></a></h3>
+<ul><li>
+<code>gfplot_response_colors()</code> errored on a response category it did not know, which broke <code><a href="../reference/plot_waterfall.html">plot_waterfall()</a></code> for caller-supplied categories.</li>
+<li>
+<code><a href="../reference/plot_waterfall.html">plot_waterfall()</a></code> silently recycled a <code>patient</code> or <code>category</code> vector of the wrong length instead of reporting it.</li>
+<li>
+<code><a href="../reference/plot_waterfall.html">plot_waterfall()</a></code> placed a negative cut-off label on top of the deepest bars, and put a downward bar’s patient label inside the bar.</li>
+<li>
+<code><a href="../reference/gfplot_save.html">gfplot_save()</a></code> computed the file hash before the device closed, so the provenance hash was of an unflushed file.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-6-0">Tests<a class="anchor" aria-label="anchor" href="#tests-0-6-0"></a></h3>
+<p>Three hundred and five tests, adding coverage for every new family, the size presets, and the provenance record.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="gfplot-050">gfplot 0.5.0<a class="anchor" aria-label="anchor" href="#gfplot-050"></a></h2>
 <p>Adds a figure-specification layer and the first new figure family, forest plots. Every existing function keeps its name and arguments.</p>
 <div class="section level3">
 <h3 id="figure-specifications-0-5-0">Figure specifications<a class="anchor" aria-label="anchor" href="#figure-specifications-0-5-0"></a></h3>
 <p><code><a href="../reference/gfplot_spec.html">gfplot_spec()</a></code> captures the data and settings for a figure as a value that can be validated, printed, and rendered later, and <code><a href="../reference/gfplot_render.html">gfplot_render()</a></code> draws it. This is the entry point for a pipeline, a report template, or an agent that has the numbers and a description of the chart it wants in one place but draws in another.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gfplot_spec.html">gfplot_spec</a></span><span class="op">(</span></span>
 <span>  <span class="st">"forest"</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">effects</span>, term <span class="op">=</span> <span class="st">"term"</span>,</span>
@@ -50,7 +114,7 @@
 <div class="section level3">
 <h3 id="forest-plots-0-5-0">Forest plots<a class="anchor" aria-label="anchor" href="#forest-plots-0-5-0"></a></h3>
 <p><code><a href="../reference/plot_forest.html">plot_forest()</a></code> draws effect estimates with confidence intervals, the numbers printed alongside, optional grouping, and optional log scaling for ratios. It reads a <code>clinstats</code> regression table without reshaping:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu">clinstats</span><span class="fu">::</span><span class="fu">cox_table</span><span class="op">(</span></span>
 <span>  <span class="fu">clinstats</span><span class="fu">::</span><span class="va">clin_crc</span>,</span>
 <span>  time <span class="op">=</span> <span class="st">"rfs.delay"</span>, event <span class="op">=</span> <span class="st">"rfs.event"</span>,</span>

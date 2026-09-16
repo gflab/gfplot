@@ -1,5 +1,91 @@
 # Changelog
 
+## gfplot 0.6.0
+
+Nine new figure families, journal size presets, and a provenance record.
+Every existing function keeps its name and arguments.
+
+### New figure families
+
+The Prediction Performance category is now complete, and five other
+categories gain their first entries.
+
+| Family | What it answers |
+|----|----|
+| [`plot_pr_curve()`](https://gflab.github.io/gfplot/reference/plot_pr_curve.md) | Precision against recall, for a rare positive class where the ROC curve can look encouraging |
+| [`plot_calibration()`](https://gflab.github.io/gfplot/reference/plot_calibration.md) | Whether a model is honest about the probability it predicts, not only about the ranking |
+| [`plot_decision_curve()`](https://gflab.github.io/gfplot/reference/plot_decision_curve.md) | Whether acting on the model does more good than harm, against treating everyone and no one |
+| [`plot_cumulative_incidence()`](https://gflab.github.io/gfplot/reference/plot_cumulative_incidence.md) | The probability of each event when competing events prevent the one of interest |
+| [`plot_volcano()`](https://gflab.github.io/gfplot/reference/plot_volcano.md) | Effect size against significance, for a differential analysis |
+| [`plot_waterfall()`](https://gflab.github.io/gfplot/reference/plot_waterfall.md) | Patients ranked by response, with the RECIST-style cut-offs |
+| [`plot_heatmap()`](https://gflab.github.io/gfplot/reference/plot_heatmap.md) | A matrix of values, with a diverging scale centred where it belongs |
+| [`plot_confusion()`](https://gflab.github.io/gfplot/reference/plot_confusion.md) | Predicted against actual class, as counts or row percentages |
+| [`plot_violin()`](https://gflab.github.io/gfplot/reference/plot_violin.md) | Grouped distributions with the observations shown |
+
+[`plot_embedding()`](https://gflab.github.io/gfplot/reference/plot_embedding.md)
+generalises the projection plots and the wrappers now delegate to it, so
+PCA, t-SNE, and UMAP share one implementation:
+
+``` r
+
+plot_embedding(data, groups, method = "tsne", perplexity = 30, seed = 1)
+plot_PCA(data, groups)   # same function, method = "pca"
+plot_UMAP(data, groups)  # same function, method = "umap"
+plot_tsne(data, groups)  # same function, method = "tsne"
+```
+
+All nine are available through the specification layer as well, and
+[`gfplot_families()`](https://gflab.github.io/gfplot/reference/gfplot_families.md)
+now indexes 26 figures across 10 categories.
+
+### Journal size presets
+
+[`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md)
+takes a `size` argument using the common column widths, so a figure is
+produced at the size the journal will print it:
+
+``` r
+
+gfplot_save(p, "figure2.png", size = "single")   # 85 mm
+gfplot_save(p, "figure2.png", size = "onehalf")  # 114 mm
+gfplot_save(p, "figure2.png", size = "double")   # 170 mm
+gfplot_save(p, "figure2.png", size = "slide")    # 16:9
+```
+
+An explicit `width` or `height` still wins, so a standard width can be
+paired with a chosen height. Without a preset the previous 7 by 5 inch
+default applies, so existing calls are unaffected.
+
+### Provenance
+
+`gfplot_save(..., provenance = TRUE)` writes a `.provenance.json` next
+to the figure recording what produced it: the figure family when the
+plot came from a specification, the package and R versions, the output
+size, device, and font, and the SHA-256 of the written file. That is
+what makes a figure in a manuscript traceable to the code that drew it.
+It is off by default so no unexpected files appear.
+
+### Repairs
+
+- `gfplot_response_colors()` errored on a response category it did not
+  know, which broke
+  [`plot_waterfall()`](https://gflab.github.io/gfplot/reference/plot_waterfall.md)
+  for caller-supplied categories.
+- [`plot_waterfall()`](https://gflab.github.io/gfplot/reference/plot_waterfall.md)
+  silently recycled a `patient` or `category` vector of the wrong length
+  instead of reporting it.
+- [`plot_waterfall()`](https://gflab.github.io/gfplot/reference/plot_waterfall.md)
+  placed a negative cut-off label on top of the deepest bars, and put a
+  downward bar’s patient label inside the bar.
+- [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md)
+  computed the file hash before the device closed, so the provenance
+  hash was of an unflushed file.
+
+### Tests
+
+Three hundred and five tests, adding coverage for every new family, the
+size presets, and the provenance record.
+
 ## gfplot 0.5.0
 
 Adds a figure-specification layer and the first new figure family,

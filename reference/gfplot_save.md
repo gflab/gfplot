@@ -14,10 +14,13 @@ default.
 gfplot_save(
   plot,
   filename,
-  width = 7,
-  height = 5,
+  width = NULL,
+  height = NULL,
   dpi = 300,
+  size = NULL,
   font = "Arial",
+  provenance = FALSE,
+  call = NULL,
   ...
 )
 ```
@@ -36,15 +39,36 @@ gfplot_save(
 
 - width, height:
 
-  Size in inches.
+  Size in inches. Default to 7 by 5, or to the `size` preset when one is
+  given.
 
 - dpi:
 
   Resolution for raster output.
 
+- size:
+
+  Journal size preset, used when `width` and `height` are not given:
+  `"single"` for one column, `"onehalf"` for 1.5 columns, `"double"` for
+  the full text width, or `"slide"` for a 16:9 presentation. The journal
+  widths follow the common 85 mm, 114 mm, and 170 mm conventions.
+  Supplying `width` or `height` overrides the preset for that dimension.
+
 - font:
 
   Font family passed to the device unchanged.
+
+- provenance:
+
+  Write a `.json` file next to the figure recording what produced it:
+  the figure family or call, the package and R versions, the output size
+  and device, and the SHA-256 of the written file. This is what makes a
+  figure in a manuscript traceable to the code that drew it.
+
+- call:
+
+  The call to record in the provenance file. Defaults to the function as
+  it was invoked.
 
 - ...:
 
@@ -52,7 +76,8 @@ gfplot_save(
 
 ## Value
 
-`filename`, invisibly.
+`filename`, invisibly. The path of the provenance file is attached as
+the `"provenance"` attribute when one is written.
 
 ## See also
 

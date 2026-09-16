@@ -21,6 +21,46 @@
 - [`plot_forest()`](https://gflab.github.io/gfplot/reference/plot_forest.md)
   : Forest plot of effect estimates
 
+## Prediction performance
+
+- [`plot_pr_curve()`](https://gflab.github.io/gfplot/reference/plot_pr_curve.md)
+  : Precision-recall curve
+- [`plot_calibration()`](https://gflab.github.io/gfplot/reference/plot_calibration.md)
+  : Calibration curve
+- [`plot_decision_curve()`](https://gflab.github.io/gfplot/reference/plot_decision_curve.md)
+  : Decision curve
+
+## Time-to-event
+
+- [`plot_cumulative_incidence()`](https://gflab.github.io/gfplot/reference/plot_cumulative_incidence.md)
+  : Cumulative incidence of competing events
+
+## Genomic and omics
+
+- [`plot_volcano()`](https://gflab.github.io/gfplot/reference/plot_volcano.md)
+  : Volcano plot
+- [`plot_waterfall()`](https://gflab.github.io/gfplot/reference/plot_waterfall.md)
+  : Waterfall plot of response
+
+## Matrix and confusion
+
+- [`plot_heatmap()`](https://gflab.github.io/gfplot/reference/plot_heatmap.md)
+  : Heatmap of a matrix
+- [`plot_confusion()`](https://gflab.github.io/gfplot/reference/plot_confusion.md)
+  : Confusion matrix
+
+## Distributions
+
+- [`plot_violin()`](https://gflab.github.io/gfplot/reference/plot_violin.md)
+  : Compare distributions across groups
+
+## Projections
+
+- [`plot_embedding()`](https://gflab.github.io/gfplot/reference/plot_embedding.md)
+  : Grouped embedding scatter
+- [`plot_tsne()`](https://gflab.github.io/gfplot/reference/plot_tsne.md)
+  : t-SNE projection of samples coloured by group
+
 ## Figure specifications
 
 - [`gfplot_spec()`](https://gflab.github.io/gfplot/reference/gfplot_spec.md)
