@@ -38,16 +38,31 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          # Hard dependencies keep the run fast: DOSE, HTSanalyzeR2, and the
-          # other optional back ends are not installed. testthat is added
-          # explicitly because it lives in Suggests, and the examples and
-          # tests guard themselves when an optional back end is absent.
+          # Hard dependencies plus the Suggests that are cheap and gate real
+          # tests. The heavier optional back ends (DOSE, HTSanalyzeR2,
+          # ggradar) come from Bioconductor or GitHub and stay absent on
+          # purpose: gfplot is designed so library() works without them, and
+          # the examples and tests skip rather than fail.
           extra-packages: |
             any::rcmdcheck
             any::testthat
+            any::digest
+            any::extrafont
+            any::ggsignif
+            any::glmnet
+            any::Rtsne
+            any::survivalROC
+            any::timeROC
+            any::umap
           dependencies: '"hard"'
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual")'
+          # Not --as-cran: that forces every Suggests entry to be installable,
+          # which contradicts the optional-back-end design above. The
+          # explicit _R_CHECK_FORCE_SUGGESTS_=false env setting is what makes
+          # an absent optional back end a note rather than a failure, and
+          # error-on keeps real warnings fatal.
+          args: 'c("--no-manual")'
