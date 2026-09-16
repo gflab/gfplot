@@ -112,10 +112,14 @@ Every function returns a `ggplot` object.
 | --- | --- |
 | Survival | `plot_KMCurve()`, `generate_time_event()` |
 | Discrimination | `plot_ROC()`, `plot_TimeROC()`, `plot_MulROC()` |
+| Effect estimates | `plot_forest()` |
 | Sample-level figures | `plot_RiskScore()`, `plot_Boxplot()`, `plot_barplot()`, `plot_cor()` |
 | Projections and models | `plot_PCA()`, `plot_UMAP()`, `plot_lasso()` |
 | Enrichment and immune figures | `plot_GO()`, `viewGSEA()`, `ggGSEA()`, `plot_immune()` |
 | Style and output | `get_color()`, `gfplot_save()`, `gfplot_font_setup()` |
+
+`gfplot_families()` lists every figure the package can draw, with its
+category and an example call.
 
 Notable arguments:
 
@@ -128,6 +132,55 @@ Notable arguments:
 | `plot_ROC()` | `percent.style` | Label axes as percentages |
 | `plot_UMAP()`, `plot_PCA()` | `palette` | Choose the group colours |
 | every plot | `font` | Override the typeface for one figure |
+
+## Forest plots
+
+`plot_forest()` draws hazard ratios, odds ratios, or mean differences with
+their confidence intervals and the numbers alongside. It reads a `clinstats`
+regression table directly, so a result goes from model to figure without
+reshaping:
+
+```r
+library(clinstats)
+
+table <- cox_table(
+  clin_crc,
+  time = "rfs.delay", event = "rfs.event",
+  factors = c("sex", "age", "tnm.stage"), multivariable = "none"
+)
+
+plot_forest(
+  table,
+  term = "term", estimate = "hr_univariable",
+  lower = "univ_ci_lower", upper = "univ_ci_upper", p = "univ_p",
+  log_scale = TRUE, title = "Overall survival (univariable)"
+)
+```
+
+Ratios use a log axis, where a halving and a doubling are the same distance.
+Pass `log_scale = FALSE` for an effect measured as a difference, which may
+legitimately cross zero.
+
+## Programmatic use
+
+A figure can also be described as a value and drawn later, which is what a
+pipeline or an agent needs when the numbers and the chart are decided in
+different places:
+
+```r
+spec <- gfplot_spec(
+  "forest",
+  data = table, term = "term",
+  estimate = "hr_univariable",
+  lower = "univ_ci_lower", upper = "univ_ci_upper",
+  p = "univ_p", log_scale = TRUE
+)
+
+gfplot_save(gfplot_render(spec), "figure2.png", width = 7, height = 4)
+```
+
+`gfplot_families()` lists every figure the package can draw and how to call
+it.
 
 ## Save a figure
 

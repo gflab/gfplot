@@ -13,6 +13,14 @@ reference:
       - plot_ROC
       - plot_TimeROC
       - plot_MulROC
+  - title: Effect estimates
+    contents:
+      - plot_forest
+  - title: Figure specifications
+    contents:
+      - gfplot_spec
+      - gfplot_render
+      - gfplot_families
   - title: Sample-level figures
     contents:
       - plot_RiskScore

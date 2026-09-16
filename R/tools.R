@@ -84,6 +84,25 @@ generate_time_event <- function(clinical, limits, labels = NULL) {
 }
 
 # Report a missing optional dependency with an actionable message.
+# Confirm that a data frame carries the columns a function needs, and name the
+# ones that are absent rather than failing later inside a model or a layer.
+check_columns <- function(data, columns, arg = "data") {
+  if (!is.data.frame(data)) {
+    cli::cli_abort(
+      "{.arg {arg}} must be a data frame, not {.cls {class(data)[1]}}."
+    )
+  }
+  columns <- as.character(columns)
+  missing <- setdiff(columns, names(data))
+  if (length(missing) > 0) {
+    cli::cli_abort(c(
+      "{.arg {arg}} is missing the column{?s} {.val {missing}}.",
+      i = "Available columns: {.val {names(data)}}."
+    ))
+  }
+  invisible(data)
+}
+
 gfplot_require <- function(package, hint = NULL) {
   if (!requireNamespace(package, quietly = TRUE)) {
     cli::cli_abort(c(
