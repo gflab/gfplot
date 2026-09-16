@@ -431,6 +431,12 @@ gfplot_provenance <- function(filename, plot, width, height, dpi, ext, font,
     environment = list(
       gfplot = as.character(utils::packageVersion("gfplot")),
       r = R.version.string,
+      # The display string differs between a release ("R version 4.6.0") and
+      # devel ("R Under development (unstable) (... r90534)"), so the numeric
+      # components are recorded separately. A reader can then compare a
+      # version without parsing the wording.
+      r_major = R.version$major,
+      r_minor = R.version$minor,
       platform = R.version$platform
     ),
     created = format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
