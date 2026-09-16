@@ -37,7 +37,7 @@ charts."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>gfplot: publication-ready figures for cancer bioinformatics</h1>
-      <small class="dont-index">Source: <a href="https://github.com/gflab/gfplot/blob/v0.3.0/R/gfplot-package.R" class="external-link"><code>R/gfplot-package.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/gflab/gfplot/blob/master/R/gfplot-package.R" class="external-link"><code>R/gfplot-package.R</code></a></small>
       <div class="d-none name"><code>gfplot-package.Rd</code></div>
     </div>
 
@@ -51,10 +51,24 @@ charts.</p>
 
 
     <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Loading the package sets the global <code>ggplot2</code> theme to
-<code><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">cowplot::theme_cowplot()</a></code> unless <code>options(gfplot.set_theme = FALSE)</code> is
-set beforehand.</p>
+    <h2 id="figure-style">Figure style<a class="anchor" aria-label="anchor" href="#figure-style"></a></h2>
+
+
+<p><code>gfplot</code> is opinionated about presentation. Figures use Arial and the
+<code><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">cowplot::theme_cowplot()</a></code> theme, which is the lab standard for publication
+output. Loading the package therefore sets the global <code>ggplot2</code> theme to
+<code>theme_cowplot()</code> as the session baseline: attaching <code>gfplot</code> is a
+statement that this style is the intended default, so every figure in the
+session — including figures drawn by other packages — starts from the same
+look.</p>
+<p>This is a deliberate choice rather than an incidental side effect. Set
+<code>options(gfplot.set_theme = FALSE)</code> before <code><a href="https://github.com/gflab/gfplot" class="external-link">library(gfplot)</a></code> to keep an
+existing theme; <code><a href="https://ggplot2.tidyverse.org/reference/get_theme.html" class="external-link">ggplot2::theme_set()</a></code> can also be called afterwards to
+choose a different baseline.</p>
+<p>Font and colour follow the same principle. Arial is the default on every
+plotting function, and <code><a href="get_color.html">get_color()</a></code> returns journal palettes, so figures
+are consistent across a manuscript without per-figure tuning. See
+<code><a href="gfplot_save.html">gfplot_save()</a></code> for writing files that render the font correctly.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

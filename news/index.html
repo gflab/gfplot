@@ -29,7 +29,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/gflab/gfplot/blob/v0.3.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/gflab/gfplot/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
@@ -57,7 +57,13 @@
 <li>
 <code><a href="../reference/plot_ROC.html">plot_ROC()</a></code> reproduces the 0.1.0 appearance: axis labels <code>1 - Specificity</code> and <code>Sensitivity</code>, the dashed reference diagonal, and equal coordinate scaling.</li>
 <li>Missing optional back ends report a formatted error that names the package and the install command, through .</li>
+<li>
+<code>plot_KMCurve(risk.table = TRUE)</code> no longer floods the console with <code>font family 'Arial' not found in PostScript font database</code>. <code>cowplot</code> measures text against that database once per element while assembling the risk table — 79 warnings for a two-group curve — even though rendering goes through the device the user chooses. The probe is now reported once per session as a formatted message naming the affected route and the fix.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="documentation-0-3-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-3-0"></a></h3>
+<p>The README is rewritten around how the package is actually used: what it is for, the house style and why it is opinionated, quick-start examples with figures produced by the package, a function and argument index, and a table of optional back ends with install commands.</p>
+</div>
 <div class="section level3">
 <h3 id="tests-0-3-0">Tests<a class="anchor" aria-label="anchor" href="#tests-0-3-0"></a></h3>
 <p>Seventy tests, including new coverage for the direction of the plotted curve, <code>force05</code>, the correlation annotation under missing and degenerate input, and <code><a href="../reference/gfplot_save.html">gfplot_save()</a></code>.</p>

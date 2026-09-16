@@ -55,6 +55,20 @@ at all.
   scaling.
 - Missing optional back ends report a formatted error that names the
   package and the install command, through .
+- `plot_KMCurve(risk.table = TRUE)` no longer floods the console with
+  `font family 'Arial' not found in PostScript font database`. `cowplot`
+  measures text against that database once per element while assembling
+  the risk table — 79 warnings for a two-group curve — even though
+  rendering goes through the device the user chooses. The probe is now
+  reported once per session as a formatted message naming the affected
+  route and the fix.
+
+### Documentation
+
+The README is rewritten around how the package is actually used: what it
+is for, the house style and why it is opinionated, quick-start examples
+with figures produced by the package, a function and argument index, and
+a table of optional back ends with install commands.
 
 ### Tests
 
