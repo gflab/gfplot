@@ -11,7 +11,7 @@ be used to pass colours through from a caller."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,8 @@ be used to pass colours through from a caller.</p>
 
 <dl><dt id="arg-palette">palette<a class="anchor" aria-label="anchor" href="#arg-palette"></a></dt>
 <dd><p>Palette name: <code>"nature"</code>, <code>"jco"</code>, <code>"lancet"</code>, <code>"jama"</code>,
-<code>"jama_classic"</code>, or any other value, which selects the ColorBrewer
+<code>"jama_classic"</code>, <code>"house"</code> for the lab series ramp described in
+<code><a href="gfplot_colors.html">gfplot_colors()</a></code>, or any other value, which selects the ColorBrewer
 <code>"Set1"</code> palette.</p></dd>
 
 
@@ -71,6 +72,8 @@ be used to pass colours through from a caller.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">get_color</span><span class="op">(</span><span class="st">"jama"</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#374E55FF" "#DF8F44FF" "#00A1D5FF"</span>
+<span class="r-in"><span><span class="fu">get_color</span><span class="op">(</span><span class="st">"house"</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#0B4F6C" "#2A9D8F" "#B84A3A" "#D99A2B"</span>
 <span class="r-in"><span><span class="fu">get_color</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#111111"</span>, <span class="st">"#222222"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "#111111" "#222222"</span>
 </code></pre></div>

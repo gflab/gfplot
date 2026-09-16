@@ -10,9 +10,9 @@ endpoints rather than from different markers of the same cohort.
 plot_MulROC(
   scores,
   labels,
-  palette = "jama_classic",
+  palette = "house",
   color = NULL,
-  legend.pos = c(0.4, 0.15),
+  legend.pos = "bottom",
   title = NULL,
   font = "Arial",
   percent.style = FALSE
@@ -40,7 +40,8 @@ plot_MulROC(
 
 - legend.pos:
 
-  Legend position as an x/y coordinate pair.
+  Legend position: a position such as `"bottom"`, or an x/y coordinate
+  pair in panel units for a legend inside the panel.
 
 - title:
 

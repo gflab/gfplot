@@ -10,8 +10,8 @@ plot_ROC(
   scores,
   labels,
   force05 = FALSE,
-  palette = "jama",
-  legend.pos = c(0.2, 0.15),
+  palette = "house",
+  legend.pos = "bottom",
   title = NULL,
   font = "Arial",
   percent.style = FALSE
@@ -40,7 +40,8 @@ plot_ROC(
 
 - legend.pos:
 
-  Legend position as an x/y coordinate pair.
+  Legend position: a position such as `"bottom"`, or an x/y coordinate
+  pair in panel units for a legend inside the panel.
 
 - title:
 

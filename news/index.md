@@ -1,5 +1,73 @@
 # Changelog
 
+## gfplot 0.4.0
+
+Adds an explicit style layer, so the house style is defined in one place
+instead of being restated in every plotting function.
+
+### The style layer
+
+- [`gfplot_colors()`](https://gflab.github.io/gfplot/reference/gfplot_colors.md)
+  returns colours by semantic role — `"model_curve"`,
+  `"comparator_curve"`, `"reference_line"`, `"text"`, `"grid"` — so a
+  figure says what a colour is for rather than naming a hex value.
+  Override any role for a session with
+  `options(gfplot.palette = list(primary = "#123456"))`.
+- [`gfplot_theme()`](https://gflab.github.io/gfplot/reference/gfplot_theme.md)
+  is the theme every figure is drawn with: bold axis titles, a thin
+  major grid, a panel border, and a horizontal legend under the panel.
+  Sizes derive from `base_size`, so one number rescales a figure.
+- [`gfplot_legend()`](https://gflab.github.io/gfplot/reference/gfplot_legend.md)
+  wraps the legend onto as many rows as the number of series needs, and
+  hides it when a single series would only restate the axis.
+- `get_color("house")` returns the lab series ramp, and
+  [`plot_Boxplot()`](https://gflab.github.io/gfplot/reference/plot_Boxplot.md),
+  [`plot_RiskScore()`](https://gflab.github.io/gfplot/reference/plot_RiskScore.md),
+  and
+  [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md)
+  map risk-group labels onto paired colours regardless of spelling, so
+  “Low Risk”, “low-risk”, and “low risk” all take the model-curve
+  colour.
+
+### Changed defaults
+
+- The default `palette` for every plotting function is now `"house"`,
+  the lab ramp. The journal palettes remain available by name.
+- [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md),
+  [`plot_TimeROC()`](https://gflab.github.io/gfplot/reference/plot_TimeROC.md),
+  and
+  [`plot_MulROC()`](https://gflab.github.io/gfplot/reference/plot_MulROC.md)
+  place the legend at the bottom by default, where the
+  area-under-the-curve labels have room, instead of at a fixed point
+  inside the panel. Pass an x/y coordinate pair to `legend.pos` for an
+  inside-panel legend.
+- ROC panels use a fixed 0 to 1 range with no expansion, so the diagonal
+  meets the corners.
+- [`plot_PCA()`](https://gflab.github.io/gfplot/reference/plot_PCA.md),
+  [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md),
+  and
+  [`plot_lasso()`](https://gflab.github.io/gfplot/reference/plot_lasso.md)
+  take a `font` argument, like the other plotting functions.
+
+### Repairs
+
+- [`gfplot_colors()`](https://gflab.github.io/gfplot/reference/gfplot_colors.md)
+  accepts a vector of roles, which previously failed with “the condition
+  has length \> 1”.
+
+### Tests
+
+One hundred and twenty-three tests, including coverage for role and
+alias resolution, palette overrides, risk-group colour matching, theme
+scaling, and legend wrapping.
+
+### Documentation
+
+The README is rewritten around how the package is actually used: what it
+is for, the house style and why it is opinionated, quick-start examples
+with figures produced by the package, a function and argument index, and
+a table of optional back ends with install commands.
+
 ## gfplot 0.3.0
 
 Modernises the package around two goals: figures come out in Arial
@@ -102,8 +170,10 @@ name and arguments, so existing scripts continue to run unchanged.
   same hazard ratio and confidence interval without a Bioconductor
   dependency.
 - [`plot_Boxplot()`](https://gflab.github.io/gfplot/reference/plot_Boxplot.md)
-  no longer relies on `qplot()`, handles non-factor groups, and builds
-  every pairwise comparison instead of assuming two groups.
+  no longer relies on
+  [`qplot()`](https://ggplot2.tidyverse.org/reference/qplot.html),
+  handles non-factor groups, and builds every pairwise comparison
+  instead of assuming two groups.
 - [`plot_immune()`](https://gflab.github.io/gfplot/reference/plot_immune.md)
   no longer hard-codes the positions of the immune-cell columns, which
   previously broke for panels with a different number of cell types.
@@ -128,8 +198,10 @@ name and arguments, so existing scripts continue to run unchanged.
   curve layout is unchanged, and a spurious warning from `precrec` under
   `ggplot2` 4.0 is suppressed.
 - [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md)
-  no longer passes `element_blank()` to the risk-table title, which
-  current `survminer` and `ggplot2` reject.
+  no longer passes
+  [`element_blank()`](https://ggplot2.tidyverse.org/reference/element.html)
+  to the risk-table title, which current `survminer` and `ggplot2`
+  reject.
 
 ### Dependencies
 

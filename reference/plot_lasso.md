@@ -7,7 +7,7 @@ selected value of `s`.
 ## Usage
 
 ``` r
-plot_lasso(fit, s)
+plot_lasso(fit, s, font = "Arial")
 ```
 
 ## Arguments
@@ -19,6 +19,10 @@ plot_lasso(fit, s)
 - s:
 
   Selected value of the penalty parameter.
+
+- font:
+
+  Font family used in the plot.
 
 ## Value
 

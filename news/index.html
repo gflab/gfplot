@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,43 @@
       <small>Source: <a href="https://github.com/gflab/gfplot/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="gfplot-040">gfplot 0.4.0<a class="anchor" aria-label="anchor" href="#gfplot-040"></a></h2>
+<p>Adds an explicit style layer, so the house style is defined in one place instead of being restated in every plotting function.</p>
+<div class="section level3">
+<h3 id="the-style-layer-0-4-0">The style layer<a class="anchor" aria-label="anchor" href="#the-style-layer-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/gfplot_colors.html">gfplot_colors()</a></code> returns colours by semantic role — <code>"model_curve"</code>, <code>"comparator_curve"</code>, <code>"reference_line"</code>, <code>"text"</code>, <code>"grid"</code> — so a figure says what a colour is for rather than naming a hex value. Override any role for a session with <code>options(gfplot.palette = list(primary = "#123456"))</code>.</li>
+<li>
+<code><a href="../reference/gfplot_theme.html">gfplot_theme()</a></code> is the theme every figure is drawn with: bold axis titles, a thin major grid, a panel border, and a horizontal legend under the panel. Sizes derive from <code>base_size</code>, so one number rescales a figure.</li>
+<li>
+<code><a href="../reference/gfplot_legend.html">gfplot_legend()</a></code> wraps the legend onto as many rows as the number of series needs, and hides it when a single series would only restate the axis.</li>
+<li>
+<code>get_color("house")</code> returns the lab series ramp, and <code><a href="../reference/plot_Boxplot.html">plot_Boxplot()</a></code>, <code><a href="../reference/plot_RiskScore.html">plot_RiskScore()</a></code>, and <code><a href="../reference/plot_KMCurve.html">plot_KMCurve()</a></code> map risk-group labels onto paired colours regardless of spelling, so “Low Risk”, “low-risk”, and “low risk” all take the model-curve colour.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="changed-defaults-0-4-0">Changed defaults<a class="anchor" aria-label="anchor" href="#changed-defaults-0-4-0"></a></h3>
+<ul><li>The default <code>palette</code> for every plotting function is now <code>"house"</code>, the lab ramp. The journal palettes remain available by name.</li>
+<li>
+<code><a href="../reference/plot_ROC.html">plot_ROC()</a></code>, <code><a href="../reference/plot_TimeROC.html">plot_TimeROC()</a></code>, and <code><a href="../reference/plot_MulROC.html">plot_MulROC()</a></code> place the legend at the bottom by default, where the area-under-the-curve labels have room, instead of at a fixed point inside the panel. Pass an x/y coordinate pair to <code>legend.pos</code> for an inside-panel legend.</li>
+<li>ROC panels use a fixed 0 to 1 range with no expansion, so the diagonal meets the corners.</li>
+<li>
+<code><a href="../reference/plot_PCA.html">plot_PCA()</a></code>, <code><a href="../reference/plot_UMAP.html">plot_UMAP()</a></code>, and <code><a href="../reference/plot_lasso.html">plot_lasso()</a></code> take a <code>font</code> argument, like the other plotting functions.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="repairs-0-4-0">Repairs<a class="anchor" aria-label="anchor" href="#repairs-0-4-0"></a></h3>
+<ul><li>
+<code><a href="../reference/gfplot_colors.html">gfplot_colors()</a></code> accepts a vector of roles, which previously failed with “the condition has length &gt; 1”.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-4-0">Tests<a class="anchor" aria-label="anchor" href="#tests-0-4-0"></a></h3>
+<p>One hundred and twenty-three tests, including coverage for role and alias resolution, palette overrides, risk-group colour matching, theme scaling, and legend wrapping.</p>
+</div>
+<div class="section level3">
+<h3 id="documentation-0-4-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-4-0"></a></h3>
+<p>The README is rewritten around how the package is actually used: what it is for, the house style and why it is opinionated, quick-start examples with figures produced by the package, a function and argument index, and a table of optional back ends with install commands.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="gfplot-030">gfplot 0.3.0<a class="anchor" aria-label="anchor" href="#gfplot-030"></a></h2>
 <p>Modernises the package around two goals: figures come out in Arial without setup, and the package depends on less to maintain.</p>
@@ -83,7 +120,7 @@
 <li>
 <code><a href="../reference/plot_KMCurve.html">plot_KMCurve()</a></code> computed the hazard ratio through <code>survcomp</code>. It now uses a univariable Cox model from the <code>survival</code> package, which gives the same hazard ratio and confidence interval without a Bioconductor dependency.</li>
 <li>
-<code><a href="../reference/plot_Boxplot.html">plot_Boxplot()</a></code> no longer relies on <code>qplot()</code>, handles non-factor groups, and builds every pairwise comparison instead of assuming two groups.</li>
+<code><a href="../reference/plot_Boxplot.html">plot_Boxplot()</a></code> no longer relies on <code><a href="https://ggplot2.tidyverse.org/reference/qplot.html" class="external-link">qplot()</a></code>, handles non-factor groups, and builds every pairwise comparison instead of assuming two groups.</li>
 <li>
 <code><a href="../reference/plot_immune.html">plot_immune()</a></code> no longer hard-codes the positions of the immune-cell columns, which previously broke for panels with a different number of cell types.</li>
 <li>
@@ -97,7 +134,7 @@
 <li>
 <code><a href="../reference/plot_ROC.html">plot_ROC()</a></code> now accepts a matrix as well as a data frame for <code>scores</code>. In 0.1.0 a matrix was walked element by element, which raised a length error. The curve layout is unchanged, and a spurious warning from <code>precrec</code> under <code>ggplot2</code> 4.0 is suppressed.</li>
 <li>
-<code><a href="../reference/plot_KMCurve.html">plot_KMCurve()</a></code> no longer passes <code>element_blank()</code> to the risk-table title, which current <code>survminer</code> and <code>ggplot2</code> reject.</li>
+<code><a href="../reference/plot_KMCurve.html">plot_KMCurve()</a></code> no longer passes <code><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank()</a></code> to the risk-table title, which current <code>survminer</code> and <code>ggplot2</code> reject.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="dependencies-0-2-0">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies-0-2-0"></a></h3>

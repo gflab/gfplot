@@ -51,6 +51,12 @@
 
 - [`get_color()`](https://gflab.github.io/gfplot/reference/get_color.md)
   : Colour palettes used by the plotting functions
+- [`gfplot_colors()`](https://gflab.github.io/gfplot/reference/gfplot_colors.md)
+  : House colours by semantic role
+- [`gfplot_theme()`](https://gflab.github.io/gfplot/reference/gfplot_theme.md)
+  : House theme for publication figures
+- [`gfplot_legend()`](https://gflab.github.io/gfplot/reference/gfplot_legend.md)
+  : Legend layout for a set of series labels
 - [`gfplot_font_setup()`](https://gflab.github.io/gfplot/reference/gfplot_font_setup.md)
   : Check which devices can render the figure font
 - [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md)

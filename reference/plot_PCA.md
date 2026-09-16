@@ -9,7 +9,8 @@ plot_PCA(
   data,
   labs,
   title = "Evaluate the batch effect between groups",
-  palette = "nature"
+  palette = "house",
+  font = "Arial"
 )
 ```
 
@@ -31,6 +32,10 @@ plot_PCA(
 
   Palette name passed to
   [`get_color()`](https://gflab.github.io/gfplot/reference/get_color.md).
+
+- font:
+
+  Font family used in the plot.
 
 ## Value
 

@@ -11,7 +11,7 @@ endpoints rather than from different markers of the same cohort."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,9 +48,9 @@ endpoints rather than from different markers of the same cohort.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_MulROC</span><span class="op">(</span></span>
 <span>  <span class="va">scores</span>,</span>
 <span>  <span class="va">labels</span>,</span>
-<span>  palette <span class="op">=</span> <span class="st">"jama_classic"</span>,</span>
+<span>  palette <span class="op">=</span> <span class="st">"house"</span>,</span>
 <span>  color <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  legend.pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.4</span>, <span class="fl">0.15</span><span class="op">)</span>,</span>
+<span>  legend.pos <span class="op">=</span> <span class="st">"bottom"</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  font <span class="op">=</span> <span class="st">"Arial"</span>,</span>
 <span>  percent.style <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -78,7 +78,8 @@ endpoints rather than from different markers of the same cohort.</p>
 
 
 <dt id="arg-legend-pos">legend.pos<a class="anchor" aria-label="anchor" href="#arg-legend-pos"></a></dt>
-<dd><p>Legend position as an x/y coordinate pair.</p></dd>
+<dd><p>Legend position: a position such as <code>"bottom"</code>, or an x/y
+coordinate pair in panel units for a legend inside the panel.</p></dd>
 
 
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>

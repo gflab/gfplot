@@ -9,7 +9,7 @@ plot_RiskScore(
   rs,
   event,
   legend.position = c(0.2, 0.8),
-  palette = "jama",
+  palette = "house",
   color = NULL,
   font = "Arial"
 )

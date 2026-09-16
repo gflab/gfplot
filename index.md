@@ -186,25 +186,56 @@ this; the file embeds the real font. Every plotting function also takes
 
 ## Figure style
 
-The house style is Arial,
-[`cowplot::theme_cowplot()`](https://wilkelab.org/cowplot/reference/theme_cowplot.html),
-and a journal palette. Each part can be changed for a session or for one
-figure.
+The house style is defined once, in three functions, so every figure in
+a manuscript matches without per-figure tuning.
+
+| Function | What it sets |
+|----|----|
+| [`gfplot_theme()`](https://gflab.github.io/gfplot/reference/gfplot_theme.md) | Type, grid, panel border, and legend placement |
+| [`gfplot_colors()`](https://gflab.github.io/gfplot/reference/gfplot_colors.md) | Colours by role — `"model_curve"`, `"comparator_curve"`, `"reference_line"` |
+| [`gfplot_legend()`](https://gflab.github.io/gfplot/reference/gfplot_legend.md) | Legend wrapping and when to hide it |
+
+Colours are addressed by role rather than by hex value, so a figure
+states what a colour is for:
 
 ``` r
 
-# Keep an existing theme instead of adopting the baseline
-options(gfplot.set_theme = FALSE)
-library(gfplot)
+gfplot_colors("primary")
+#>   primary
+#> "#0B4F6C"
 
-# Or set a different baseline after loading
-ggplot2::theme_set(ggplot2::theme_minimal())
+gfplot_colors(c("model_curve", "comparator_curve"))
+#>      model_curve comparator_curve
+#>        "#0B4F6C"        "#2A9D8F"
+```
+
+Risk-group labels are matched by meaning, not spelling, so “Low Risk”,
+“low-risk”, and “low risk” all take the model-curve colour.
+
+Retune the whole suite for a session by overriding a role; no figure
+code changes:
+
+``` r
+
+options(gfplot.palette = list(primary = "#123456"))
+```
+
+Each part can also be changed for a single figure:
+
+``` r
+
+# A larger base size for a figure that will be printed small
+plot_KMCurve(clin, labels) + gfplot_theme(base_size = 14)
 
 # One figure in a different typeface
 plot_ROC(scores, labels, font = "Helvetica")
 
-# One figure with a different palette
+# One figure with a journal palette instead of the house ramp
 plot_UMAP(embedding, groups, palette = "lancet")
+
+# Keep an existing theme instead of adopting the baseline
+options(gfplot.set_theme = FALSE)
+library(gfplot)
 ```
 
 ## Optional back ends

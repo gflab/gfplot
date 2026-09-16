@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -255,20 +255,59 @@
 <div class="section level2">
 <h2 id="figure-style">Figure style<a class="anchor" aria-label="anchor" href="#figure-style"></a>
 </h2>
-<p>The house style is Arial, <code><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">cowplot::theme_cowplot()</a></code>, and a journal palette. Each part can be changed for a session or for one figure.</p>
+<p>The house style is defined once, in three functions, so every figure in a manuscript matches without per-figure tuning.</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>What it sets</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/gfplot_theme.html">gfplot_theme()</a></code></td>
+<td>Type, grid, panel border, and legend placement</td>
+</tr>
+<tr>
+<td><code><a href="reference/gfplot_colors.html">gfplot_colors()</a></code></td>
+<td>Colours by role — <code>"model_curve"</code>, <code>"comparator_curve"</code>, <code>"reference_line"</code>
+</td>
+</tr>
+<tr>
+<td><code><a href="reference/gfplot_legend.html">gfplot_legend()</a></code></td>
+<td>Legend wrapping and when to hide it</td>
+</tr>
+</tbody>
+</table>
+<p>Colours are addressed by role rather than by hex value, so a figure states what a colour is for:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Keep an existing theme instead of adopting the baseline</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>gfplot.set_theme <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gflab/gfplot" class="external-link">gfplot</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/gfplot_colors.html">gfplot_colors</a></span><span class="op">(</span><span class="st">"primary"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   primary</span></span>
+<span><span class="co">#&gt; "#0B4F6C"</span></span>
 <span></span>
-<span><span class="co"># Or set a different baseline after loading</span></span>
-<span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html" class="external-link">theme_set</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gfplot_colors.html">gfplot_colors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"model_curve"</span>, <span class="st">"comparator_curve"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      model_curve comparator_curve</span></span>
+<span><span class="co">#&gt;        "#0B4F6C"        "#2A9D8F"</span></span></code></pre></div>
+<p>Risk-group labels are matched by meaning, not spelling, so “Low Risk”, “low-risk”, and “low risk” all take the model-curve colour.</p>
+<p>Retune the whole suite for a session by overriding a role; no figure code changes:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>gfplot.palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>primary <span class="op">=</span> <span class="st">"#123456"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Each part can also be changed for a single figure:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># A larger base size for a figure that will be printed small</span></span>
+<span><span class="fu"><a href="reference/plot_KMCurve.html">plot_KMCurve</a></span><span class="op">(</span><span class="va">clin</span>, <span class="va">labels</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="reference/gfplot_theme.html">gfplot_theme</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># One figure in a different typeface</span></span>
 <span><span class="fu"><a href="reference/plot_ROC.html">plot_ROC</a></span><span class="op">(</span><span class="va">scores</span>, <span class="va">labels</span>, font <span class="op">=</span> <span class="st">"Helvetica"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># One figure with a different palette</span></span>
-<span><span class="fu"><a href="reference/plot_UMAP.html">plot_UMAP</a></span><span class="op">(</span><span class="va">embedding</span>, <span class="va">groups</span>, palette <span class="op">=</span> <span class="st">"lancet"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># One figure with a journal palette instead of the house ramp</span></span>
+<span><span class="fu"><a href="reference/plot_UMAP.html">plot_UMAP</a></span><span class="op">(</span><span class="va">embedding</span>, <span class="va">groups</span>, palette <span class="op">=</span> <span class="st">"lancet"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Keep an existing theme instead of adopting the baseline</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>gfplot.set_theme <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gflab/gfplot" class="external-link">gfplot</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="optional-back-ends">Optional back ends<a class="anchor" aria-label="anchor" href="#optional-back-ends"></a>
@@ -336,7 +375,7 @@
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"gfplot"</span><span class="op">)</span></span></code></pre></div>
 <p>See <code>CITATION.cff</code> for machine-readable metadata. Both <code>v0.1.0</code> and <code>v0.3.0</code> are tagged, so a specific state can be pinned.</p>
 </div>
