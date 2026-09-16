@@ -20,14 +20,38 @@ test_that("plot_embedding marks the axes of each method", {
   skip_if_not_installed("umap")
   skip_if_not_installed("Rtsne")
   set.seed(2)
-  data <- matrix(rnorm(30 * 8), nrow = 30)
-  groups <- rep(c("A", "B", "C"), each = 10)
+  # t-SNE needs perplexity below (n - 1) / 3, so 60 samples support 5.
+  data <- matrix(rnorm(60 * 8), nrow = 60)
+  groups <- rep(c("A", "B", "C"), each = 20)
 
   expect_equal(
     plot_embedding(data, groups, method = "umap")$labels$x, "UMAP 1"
   )
   expect_equal(
-    plot_embedding(data, groups, method = "tsne")$labels$x, "t-SNE 1"
+    plot_embedding(data, groups, method = "tsne", perplexity = 5)$labels$x,
+    "t-SNE 1"
+  )
+})
+
+test_that("t-SNE reports a perplexity the data cannot support", {
+  skip_if_not_installed("Rtsne")
+  set.seed(6)
+  data <- matrix(rnorm(30 * 5), nrow = 30)
+  groups <- rep(c("A", "B"), each = 15)
+
+  # The default of 30 cannot work for 30 samples; the message must say so and
+  # name a value that can.
+  expect_error(
+    plot_embedding(data, groups, method = "tsne"),
+    "too large for 30 samples"
+  )
+  expect_error(
+    plot_embedding(data, groups, method = "tsne"),
+    "t-SNE needs perplexity below"
+  )
+  expect_s3_class(
+    plot_embedding(data, groups, method = "tsne", perplexity = 5),
+    "ggplot"
   )
 })
 

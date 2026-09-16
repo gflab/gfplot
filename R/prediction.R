@@ -276,10 +276,15 @@ plot_decision_curve <- function(probability, outcome, positive = NULL,
   curves <- do.call(rbind, lapply(names(markers), function(name) {
     p <- markers[[name]]
     keep <- !is.na(p) & !is.na(y)
-    vapply(thresholds, function(threshold) {
+    net_benefit <- vapply(thresholds, function(threshold) {
       gfplot_net_benefit(p[keep], y[keep], threshold)
-    }, numeric(1)) |>
-      data.frame(net_benefit = _, threshold = thresholds, group = name)
+    }, numeric(1))
+    data.frame(
+      net_benefit = net_benefit,
+      threshold = thresholds,
+      group = name,
+      stringsAsFactors = FALSE
+    )
   }))
 
   n <- sum(!is.na(y))

@@ -68,6 +68,17 @@ plot_embedding <- function(data, groups, method = c("pca", "tsne", "umap", "none
     },
     tsne = {
       gfplot_require("Rtsne")
+      # Rtsne needs perplexity below (n - 1) / 3. Checking here turns its
+      # "perplexity is too large for the number of samples" into a message
+      # that names a value the data can support.
+      maximum <- (nrow(data) - 1) / 3
+      if (perplexity >= maximum) {
+        cli::cli_abort(c(
+          "{.arg perplexity} is too large for {nrow(data)} samples.",
+          x = "t-SNE needs perplexity below {(nrow(data) - 1) / 3} here.",
+          i = "Use {.code perplexity = {max(2, floor(maximum / 2))}}, or supply more samples."
+        ))
+      }
       fit <- if (is.null(seed)) {
         Rtsne::Rtsne(data, perplexity = perplexity, check_duplicates = FALSE)
       } else {
