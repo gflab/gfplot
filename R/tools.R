@@ -75,72 +75,190 @@ generate_time_event <- function(clinical, limits, labels = NULL) {
 # Report a missing optional dependency with an actionable message.
 gfplot_require <- function(package, hint = NULL) {
   if (!requireNamespace(package, quietly = TRUE)) {
-    message <- sprintf(
-      "Package '%s' is required by this function. Install it with install.packages(\"%s\").",
-      package, package
-    )
-    if (!is.null(hint)) {
-      message <- paste(message, hint)
-    }
-    stop(message, call. = FALSE)
+    cli::cli_abort(c(
+      "Package {.pkg {package}} is required by this function.",
+      i = "Install it with {.run install.packages(\"{package}\")}.",
+      i = hint
+    ))
   }
   invisible(TRUE)
 }
 
-#' Prepare the Arial font family for figure output
+# Which device routes can render this font in the current session? The answer
+# comes from the font registries rather than from opening devices, so the
+# check is cheap and has no side effects.
+gfplot_font_devices <- function(font = "Arial") {
+  installed <- character()
+  if (requireNamespace("systemfonts", quietly = TRUE)) {
+    installed <- tryCatch(
+      unique(systemfonts::system_fonts()$family),
+      error = function(e) character()
+    )
+  } else if (requireNamespace("extrafont", quietly = TRUE)) {
+    installed <- tryCatch(extrafont::fonts(), error = function(e) character())
+  }
+  on_system <- font %in% installed
+
+  c(
+    raster = on_system && requireNamespace("ragg", quietly = TRUE),
+    quartz = on_system && isTRUE(capabilities("aqua")),
+    pdf = font %in% names(grDevices::pdfFonts())
+  )
+}
+
+#' Check which devices can render the figure font
 #'
-#' Figures produced by `gfplot` use Arial. On macOS the `quartz` device
-#' resolves Arial directly. PDF and PostScript output need the font to be
-#' registered with the device, which `extrafont` does; this function runs the
-#' registration and reports whether Arial is then available.
+#' Figures produced by `gfplot` use Arial. The raster devices supplied by
+#' \pkg{ragg} and the `quartz` device on macOS resolve system fonts such as
+#' Arial directly, so most output needs no preparation at all. The base
+#' `pdf()` device keeps its own font table and needs the family registered
+#' with it, which \pkg{extrafont} does.
 #'
-#' Run `extrafont::font_import()` once, before the first call to this
-#' function, to add system fonts to the `extrafont` database.
+#' This function reports which routes work in the current session and, when
+#' vector PDF output would otherwise be unavailable, registers the font with
+#' \pkg{extrafont} so that `pdf()` can use it.
 #'
-#' @param quiet Suppress progress output.
+#' @param font Font family to check.
+#' @param quiet Suppress the report.
 #'
-#' @return `TRUE` when Arial is registered for the current device, `FALSE`
-#'   otherwise, invisibly.
+#' @return A named logical vector, invisibly, with one entry per device route:
+#'   `raster` (\pkg{ragg} PNG/TIFF/JPEG), `quartz` (macOS PDF and screen),
+#'   and `pdf` (base `pdf()`). These are the routes [gfplot_save()] chooses
+#'   between.
 #'
-#' @seealso [plot_KMCurve()] for the `font` argument.
+#' @seealso [gfplot_save()] to write a figure using a device that can render
+#'   the font, and [plot_KMCurve()] for the `font` argument.
 #' @export
 #' @examples
-#' \dontrun{
-#' extrafont::font_import()
 #' gfplot_font_setup()
-#' }
-gfplot_font_setup <- function(quiet = FALSE) {
-  if (!requireNamespace("extrafont", quietly = TRUE)) {
-    if (!quiet) {
-      message(
-        "Package 'extrafont' is required to register Arial for PDF output. ",
-        "Install it with install.packages(\"extrafont\")."
-      )
-    }
-    return(invisible(FALSE))
+gfplot_font_setup <- function(font = "Arial", quiet = FALSE) {
+  devices <- gfplot_font_devices(font)
+  if (!devices[["pdf"]] && requireNamespace("extrafont", quietly = TRUE)) {
+    tryCatch(
+      {
+        extrafont::loadfonts(quiet = TRUE)
+        extrafont::loadfonts(device = "pdf", quiet = TRUE)
+      },
+      error = function(e) NULL
+    )
+    devices[["pdf"]] <- font %in% names(grDevices::pdfFonts())
   }
-  tryCatch(
-    {
-      extrafont::loadfonts(quiet = TRUE)
-      extrafont::loadfonts(device = "pdf", quiet = TRUE)
-    },
-    error = function(e) NULL
-  )
-  available <- isTRUE(tryCatch(
-    "Arial" %in% extrafont::fonts(),
-    error = function(e) FALSE
-  ))
+
   if (!quiet) {
-    if (available) {
-      message("Arial is registered for figure output.")
-    } else {
-      message(
-        "Arial is still not available. Run extrafont::font_import() once, ",
-        "then call gfplot_font_setup() again."
-      )
-    }
+    yes_no <- function(x) if (isTRUE(x)) "yes" else "no"
+    cli::cli_inform(c(
+      "Figure font {.val {font}} can be rendered by:",
+      "*" = "ragg raster devices (PNG, TIFF, JPEG): {yes_no(devices[['raster']])}",
+      "*" = "quartz (macOS PDF and screen): {yes_no(devices[['quartz']])}",
+      "*" = "base pdf(): {yes_no(devices[['pdf']])}",
+      i = "gfplot_save() picks a route that can render the font."
+    ))
   }
-  invisible(available)
+  invisible(devices)
+}
+
+#' Save a figure using a device that can render the requested font
+#'
+#' Writing an R figure with Arial is device dependent: the base `pdf()` device
+#' needs the family registered with it, while the \pkg{ragg} raster devices
+#' and the macOS `quartz` device resolve system fonts directly. This function
+#' chooses a route that can render `font` for the requested file extension, so
+#' a figure is written with the intended typeface instead of silently falling
+#' back to a default.
+#'
+#' @param plot A `ggplot` object, or any object with a `print()` method that
+#'   draws it.
+#' @param filename Output path. The extension selects the device: `.png`,
+#'   `.tiff`, `.jpg`, `.jpeg`, or `.pdf`.
+#' @param width,height Size in inches.
+#' @param dpi Resolution for raster output.
+#' @param font Font family passed to the device unchanged.
+#' @param ... Passed on to the device function.
+#'
+#' @return `filename`, invisibly.
+#'
+#' @seealso [gfplot_font_setup()] to see which devices can render a font.
+#' @export
+#' @examples
+#' p <- plot_Boxplot(c(rnorm(20), rnorm(20, 1)), rep(c("A", "B"), each = 20))
+#' path <- tempfile(fileext = ".png")
+#' gfplot_save(p, path, width = 4, height = 3)
+#' unlink(path)
+gfplot_save <- function(plot, filename, width = 7, height = 5, dpi = 300,
+                        font = "Arial", ...) {
+  ext <- tolower(tools::file_ext(filename))
+  if (!nzchar(ext)) {
+    cli::cli_abort(c(
+      "{.arg filename} needs a file extension.",
+      i = "Use one of {.file .png}, {.file .tiff}, {.file .jpg}, or {.file .pdf}."
+    ))
+  }
+
+  open_device <- switch(ext,
+    png = function() gfplot_open_raster("png", filename, width, height, dpi, ...),
+    tiff = ,
+    tif = function() gfplot_open_raster("tiff", filename, width, height, dpi, ...),
+    jpg = ,
+    jpeg = function() gfplot_open_raster("jpeg", filename, width, height, dpi, ...),
+    pdf = function() gfplot_open_pdf(filename, width, height, font, ...),
+    cli::cli_abort(c(
+      "Unsupported file extension {.val {ext}}.",
+      i = "Use one of {.file .png}, {.file .tiff}, {.file .jpg}, or {.file .pdf}."
+    ))
+  )
+
+  open_device()
+  on.exit(grDevices::dev.off(), add = TRUE)
+  print(plot)
+  invisible(filename)
+}
+
+# Open a raster device, preferring ragg because it resolves system fonts.
+gfplot_open_raster <- function(type, filename, width, height, dpi, ...) {
+  if (requireNamespace("ragg", quietly = TRUE)) {
+    device <- switch(type,
+      png = ragg::agg_png,
+      tiff = ragg::agg_tiff,
+      jpeg = ragg::agg_jpeg
+    )
+    return(device(
+      filename = filename, width = width, height = height,
+      units = "in", res = dpi, ...
+    ))
+  }
+
+  cli::cli_inform(c(
+    "Using the base {.fn {type}} device, which does not resolve system fonts.",
+    i = "Install {.pkg ragg} for figures that render Arial: {.run install.packages(\"ragg\")}."
+  ))
+  device <- switch(type,
+    png = grDevices::png,
+    tiff = grDevices::tiff,
+    jpeg = grDevices::jpeg
+  )
+  device(
+    filename = filename, width = width, height = height,
+    units = "in", res = dpi, ...
+  )
+}
+
+# Open a PDF device that can render the requested font. On macOS quartz
+# resolves system fonts natively; elsewhere the base device is used and the
+# font has to be registered with it first.
+gfplot_open_pdf <- function(filename, width, height, font, ...) {
+  devices <- gfplot_font_devices(font)
+  if (devices[["quartz"]]) {
+    return(grDevices::quartz(
+      file = filename, type = "pdf", width = width, height = height, ...
+    ))
+  }
+  if (!devices[["pdf"]]) {
+    cli::cli_inform(c(
+      "The base {.fn pdf} device cannot render {.val {font}} yet, so the file may use a fallback font.",
+      i = "Run {.run gfplot_font_setup()} to register it, which needs {.pkg extrafont}."
+    ))
+  }
+  grDevices::pdf(file = filename, width = width, height = height, ...)
 }
 
 # Render a p-value as a plotmath expression with scientific notation.

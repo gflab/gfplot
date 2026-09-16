@@ -89,15 +89,26 @@ plot_barplot <- function(value, group, comparisons = NULL,
 #' p <- plot_cor(iris$Sepal.Length, iris$Sepal.Width)
 plot_cor <- function(x, y, groups = NULL, xlab = NULL, ylab = NULL,
                      legend.pos = "top") {
-  rcorr <- Hmisc::rcorr(x, y)
-  pval <- paste(
-    sprintf("Correlation = %.3f\nP", rcorr$r[2, 1]),
-    ifelse(
-      rcorr$P[2, 1] == 0,
-      "< 1e-22",
-      paste0("= ", signif(rcorr$P[2, 1], 3))
-    )
+  # stats::cor.test() returns the same Pearson r and p-value that
+  # Hmisc::rcorr() did, including under missing values, without pulling in a
+  # package of that size.
+  estimate <- tryCatch(
+    stats::cor.test(x, y),
+    error = function(e) NULL,
+    warning = function(w) NULL
   )
+  pval <- if (is.null(estimate)) {
+    "Correlation = NA"
+  } else {
+    paste(
+      sprintf("Correlation = %.3f\nP", unname(estimate$estimate)),
+      ifelse(
+        estimate$p.value == 0,
+        "< 1e-22",
+        paste0("= ", signif(estimate$p.value, 3))
+      )
+    )
+  }
 
   df.plot <- data.frame(a = x, b = y)
   p <- ggplot2::ggplot(df.plot, ggplot2::aes(x = .data$a, y = .data$b)) +

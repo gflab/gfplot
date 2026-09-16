@@ -24,46 +24,63 @@
 plot_ROC <- function(scores, labels, force05 = FALSE, palette = "jama",
                      legend.pos = c(0.2, 0.15), title = NULL, font = "Arial",
                      percent.style = FALSE) {
-  msmdat1 <- precrec::mmdata(scores, labels, modnames = colnames(scores))
-  mmcurves <- precrec::evalmod(msmdat1)
-  auc_table <- precrec::auc(mmcurves)
-  inds <- auc_table$auc[auc_table$curvetypes == "ROC"] < 0.5
-  if (!force05) {
-    inds <- FALSE
-  }
-  if (any(inds)) {
-    if (length(inds) == 1) {
-      scores <- -scores
-    } else {
-      scores[, inds] <- -scores[, inds]
-    }
-    msmdat1 <- precrec::mmdata(scores, labels, modnames = colnames(scores))
-    mmcurves <- precrec::evalmod(msmdat1)
-  }
-
   multiple <- !is.null(dim(scores)) && ncol(scores) > 1
-  if (multiple) {
-    # Iterate over columns explicitly: sapply() would walk the individual
-    # elements of a matrix rather than its columns.
-    aucs <- t(vapply(seq_len(ncol(scores)), function(i) {
-      roc2 <- pROC::roc(labels, scores[, i], quiet = TRUE)
-      pROC::ci(roc2)[c(2, 1, 3)]
-    }, numeric(3)))
-    annot <- sprintf(
-      "%s\nAUC %.2f (%.2f-%.2f)",
-      colnames(scores), aucs[, 1], aucs[, 2], aucs[, 3]
-    )
+  markers <- if (multiple) {
+    columns <- as.data.frame(scores, check.names = FALSE)
+    stats::setNames(columns, colnames(scores))
   } else {
-    roc2 <- pROC::roc(labels, scores, quiet = TRUE)
-    aucs <- pROC::ci(roc2)[c(2, 1, 3)]
-    annot <- sprintf("AUC %.2f (%.2f-%.2f)", aucs[1], aucs[2], aucs[3])
+    list(scores = scores)
   }
 
-  # precrec 0.14 passes an internal `raw_curves` argument through `...` to
-  # ggplot2::fortify(), which ggplot2 4.0 reports as an unused argument. The
-  # result is unaffected, so the spurious warning is suppressed to keep the
-  # plot layout identical to the 0.1.0 figures.
-  p <- suppressWarnings(ggplot2::autoplot(mmcurves, "ROC")) +
+  # pROC's "<" means "observations are positive when they are greater than or
+  # equal to the threshold", so a higher score marks the positive class. That
+  # is the convention 0.1.0 drew with, and it is what makes force05
+  # meaningful. The same direction is used for the legend, so the printed
+  # area under the curve always describes the curve that is drawn: 0.1.0 drew
+  # the curve in this direction but read the legend from pROC's automatic
+  # direction, so a reversed marker was drawn below the diagonal while the
+  # legend reported the mirrored value.
+  fit_roc <- function(x) pROC::roc(labels, x, direction = "<", quiet = TRUE)
+
+  if (isTRUE(force05)) {
+    aucs <- vapply(
+      markers,
+      function(x) as.numeric(pROC::auc(fit_roc(x))),
+      numeric(1)
+    )
+    flipped <- aucs < 0.5
+    if (any(flipped)) {
+      markers[flipped] <- lapply(markers[flipped], function(x) -x)
+    }
+  }
+
+  rocs <- lapply(markers, fit_roc)
+  intervals <- lapply(rocs, function(roc) pROC::ci(roc)[c(2, 1, 3)])
+  curves <- do.call(rbind, lapply(seq_along(rocs), function(i) {
+    data.frame(
+      FPR = 1 - rocs[[i]]$specificities,
+      TPR = rocs[[i]]$sensitivities,
+      group = names(markers)[i]
+    )
+  }))
+
+  annot <- vapply(intervals, function(ci) {
+    sprintf("AUC %.2f (%.2f-%.2f)", ci[1], ci[2], ci[3])
+  }, character(1))
+  if (multiple) {
+    annot <- paste0(names(markers), "\n", annot)
+  }
+
+  p <- ggplot2::ggplot(
+    curves,
+    ggplot2::aes(x = .data$FPR, y = .data$TPR, color = .data$group)
+  ) +
+    ggplot2::geom_path() +
+    ggplot2::labs(x = "1 - Specificity", y = "Sensitivity") +
+    ggplot2::coord_equal() +
+    ggplot2::geom_abline(
+      intercept = 0, slope = 1, color = "grey50", linetype = "dashed"
+    ) +
     cowplot::theme_cowplot(font_family = font) +
     ggplot2::scale_color_manual(
       labels = annot,

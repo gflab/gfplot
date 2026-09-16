@@ -37,9 +37,46 @@ test_that("Arial is the default font for every plotting function", {
   expect_true(all(vapply(defaults, identical, logical(1), "Arial")))
 })
 
-test_that("gfplot_font_setup reports whether Arial can be registered", {
-  skip_if_not_installed("extrafont")
-  expect_type(gfplot_font_setup(quiet = TRUE), "logical")
+test_that("gfplot_font_setup reports one entry per device route", {
+  devices <- gfplot_font_setup(quiet = TRUE)
+  expect_type(devices, "logical")
+  expect_named(devices, c("raster", "quartz", "pdf"), ignore.order = TRUE)
+  expect_false(anyNA(devices))
+})
+
+test_that("gfplot_font_setup reports the device table when not quiet", {
+  expect_message(gfplot_font_setup(), "ragg raster devices")
+})
+
+test_that("a missing optional back end reports an actionable error", {
+  expect_error(
+    gfplot:::gfplot_require("definitely-not-a-package", hint = "Extra context."),
+    "install.packages"
+  )
+  expect_error(
+    gfplot:::gfplot_require("definitely-not-a-package", hint = "Extra context."),
+    "Extra context"
+  )
+})
+
+test_that("gfplot_save writes figures that render the figure font", {
+  skip_if_not_installed("ragg")
+  plot <- plot_Boxplot(c(rnorm(20), rnorm(20, 1)), rep(c("A", "B"), each = 20))
+
+  png_path <- tempfile(fileext = ".png")
+  expect_silent(gfplot_save(plot, png_path, width = 4, height = 3))
+  expect_true(file.exists(png_path))
+  expect_gt(file.size(png_path), 0)
+  # The device is always closed again, even when drawing fails part way
+  # through.
+  expect_equal(unname(grDevices::dev.cur()), 1L)
+  unlink(png_path)
+})
+
+test_that("gfplot_save validates the file extension", {
+  plot <- plot_Boxplot(c(rnorm(20), rnorm(20, 1)), rep(c("A", "B"), each = 20))
+  expect_error(gfplot_save(plot, tempfile()), "extension")
+  expect_error(gfplot_save(plot, tempfile(fileext = ".bmp")), "Unsupported")
 })
 
 test_that("figures render once the requested font is available", {

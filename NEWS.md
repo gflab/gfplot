@@ -1,3 +1,55 @@
+# gfplot 0.3.0
+
+Modernises the package around two goals: figures come out in Arial without
+setup, and the package depends on less to maintain.
+
+## Fonts no longer need a registration step for most output
+
+In 0.2.0, writing Arial meant running `extrafont::font_import()` and then
+`extrafont::loadfonts()`. That is only needed by the base `pdf()` device. The
+raster devices in \pkg{ragg} and the `quartz` device on macOS resolve system
+fonts directly, so PNG, TIFF, JPEG, and macOS PDF output need no preparation
+at all.
+
+* `gfplot_font_setup()` now reports which routes can render the font in the
+  current session instead of only driving `extrafont`. It returns a named
+  logical vector with one entry per route that `gfplot_save()` chooses
+  between (`raster`, `quartz`, `pdf`) and registers the font with
+  `extrafont` when that is the only way to get vector PDF output.
+* Added `gfplot_save()`, which writes a figure through a device that can
+  render the requested font, chosen from the file extension. It closes the
+  device even when drawing fails.
+* The default figure font is still Arial, and the `font` argument is still
+  passed to the device unchanged.
+
+## Fewer dependencies
+
+* `plot_ROC()` no longer uses \pkg{precrec}. Curves are built with \pkg{pROC},
+  which was already a dependency, so the package no longer pulls in
+  \pkg{precrec} and the `ggplot2` 4.0 warning that came with it.
+* `plot_cor()` no longer uses \pkg{Hmisc}. `stats::cor.test()` returns the
+  same Pearson correlation and p-value, including under missing values, so
+  \pkg{Hmisc} is no longer a dependency.
+
+## Repairs
+
+* `plot_ROC()` reported `1 - AUC` in the legend for a marker whose direction
+  was reversed. The curve was drawn with a fixed convention while the legend
+  came from `pROC`'s automatic direction, so a marker drawn below the
+  diagonal was labelled with the mirrored value. Both now use the same
+  direction, and the legend always describes the curve that is drawn.
+* `plot_ROC()` reproduces the 0.1.0 appearance: axis labels `1 -
+  Specificity` and `Sensitivity`, the dashed reference diagonal, and equal
+  coordinate scaling.
+* Missing optional back ends report a formatted error that names the package
+  and the install command, through \pkg{cli}.
+
+## Tests
+
+Seventy tests, including new coverage for the direction of the plotted
+curve, `force05`, the correlation annotation under missing and degenerate
+input, and `gfplot_save()`.
+
 # gfplot 0.2.0
 
 Modernisation of the 0.1.0 package. Every exported function keeps its name

@@ -3,6 +3,7 @@
 export(generate_time_event)
 export(get_color)
 export(gfplot_font_setup)
+export(gfplot_save)
 export(ggGSEA)
 export(plot_Boxplot)
 export(plot_GO)

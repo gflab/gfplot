@@ -2,33 +2,37 @@
 % Please edit documentation in R/tools.R
 \name{gfplot_font_setup}
 \alias{gfplot_font_setup}
-\title{Prepare the Arial font family for figure output}
+\title{Check which devices can render the figure font}
 \usage{
-gfplot_font_setup(quiet = FALSE)
+gfplot_font_setup(font = "Arial", quiet = FALSE)
 }
 \arguments{
-\item{quiet}{Suppress progress output.}
+\item{font}{Font family to check.}
+
+\item{quiet}{Suppress the report.}
 }
 \value{
-\code{TRUE} when Arial is registered for the current device, \code{FALSE}
-otherwise, invisibly.
+A named logical vector, invisibly, with one entry per device route:
+\code{raster} (\pkg{ragg} PNG/TIFF/JPEG), \code{quartz} (macOS PDF and screen),
+and \code{pdf} (base \code{pdf()}). These are the routes \code{\link[=gfplot_save]{gfplot_save()}} chooses
+between.
 }
 \description{
-Figures produced by \code{gfplot} use Arial. On macOS the \code{quartz} device
-resolves Arial directly. PDF and PostScript output need the font to be
-registered with the device, which \code{extrafont} does; this function runs the
-registration and reports whether Arial is then available.
+Figures produced by \code{gfplot} use Arial. The raster devices supplied by
+\pkg{ragg} and the \code{quartz} device on macOS resolve system fonts such as
+Arial directly, so most output needs no preparation at all. The base
+\code{pdf()} device keeps its own font table and needs the family registered
+with it, which \pkg{extrafont} does.
 }
 \details{
-Run \code{extrafont::font_import()} once, before the first call to this
-function, to add system fonts to the \code{extrafont} database.
+This function reports which routes work in the current session and, when
+vector PDF output would otherwise be unavailable, registers the font with
+\pkg{extrafont} so that \code{pdf()} can use it.
 }
 \examples{
-\dontrun{
-extrafont::font_import()
 gfplot_font_setup()
 }
-}
 \seealso{
-\code{\link[=plot_KMCurve]{plot_KMCurve()}} for the \code{font} argument.
+\code{\link[=gfplot_save]{gfplot_save()}} to write a figure using a device that can render
+the font, and \code{\link[=plot_KMCurve]{plot_KMCurve()}} for the \code{font} argument.
 }

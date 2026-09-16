@@ -77,21 +77,51 @@ works:
 ## Fonts
 
 Figures use Arial on every plotting function, which is the lab style for
-publication output. On macOS the `quartz` and `agg` devices resolve Arial
-directly. PDF and PostScript output need the font registered with the device,
-which `extrafont` does:
+publication output. Most output needs no preparation: the raster devices in
+[ragg](https://ragg.r-lib.org/) and the `quartz` device on macOS resolve
+system fonts directly.
+
+`gfplot_save()` writes a figure through a device that can render the font,
+chosen from the file extension:
 
 ```r
-extrafont::font_import()   # once per machine
-gfplot_font_setup()        # registers Arial with the graphics devices
+gfplot_save(plot_KMCurve(clin, labs), "figure.png", width = 7, height = 5)
+gfplot_save(plot_KMCurve(clin, labs), "figure.pdf", width = 7, height = 5)
 ```
 
-`gfplot_font_setup()` reports whether Arial is then available. Every plotting
-function takes `font`, so a different family can be used for a specific
-figure; the value is passed to the device unchanged.
+`gfplot_font_setup()` reports which routes work in the current session:
+
+```
+Figure font "Arial" can be rendered by:
+• ragg raster devices (PNG, TIFF, JPEG): yes
+• quartz (macOS PDF and screen): yes
+• base pdf(): no
+```
+
+The base `pdf()` device keeps its own font table and is the one route that
+needs help. `gfplot_font_setup()` registers Arial with it through
+[extrafont](https://github.com/wch/extrafont) when that package is
+installed; a one-time `extrafont::font_import()` is required before that can
+work. On macOS, prefer `gfplot_save(..., "figure.pdf")`, which uses `quartz`
+and needs none of this.
+
+Every plotting function takes `font`, so a different family can be used for a
+specific figure; the value is passed to the device unchanged.
 
 Figures are rendered when they are printed, so examples in the help pages
 assign them to `p`; call `print(p)` or `ggsave()` to produce the file.
+
+## Saving figures
+
+`gfplot_save()` chooses the device from the file extension: `.png`, `.tiff`,
+`.jpg`, `.jpeg`, and `.pdf` are supported. Raster output goes through
+`ragg`, which resolves system fonts; PDF output uses `quartz` on macOS and
+the base device elsewhere.
+
+```r
+p <- plot_ROC(scores, labels)
+gfplot_save(p, "roc.png", width = 5, height = 4, dpi = 300)
+```
 
 ## Themes
 

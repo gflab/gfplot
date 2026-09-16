@@ -34,3 +34,4 @@ reference:
     contents:
       - get_color
       - gfplot_font_setup
+      - gfplot_save
