@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -184,18 +184,33 @@
 <div class="section level2">
 <h2 id="fonts">Fonts<a class="anchor" aria-label="anchor" href="#fonts"></a>
 </h2>
-<p>Figures use Arial on every plotting function, which is the lab style for publication output. On macOS the <code>quartz</code> and <code>agg</code> devices resolve Arial directly. PDF and PostScript output need the font registered with the device, which <code>extrafont</code> does:</p>
+<p>Figures use Arial on every plotting function, which is the lab style for publication output. Most output needs no preparation: the raster devices in <a href="https://ragg.r-lib.org/" class="external-link">ragg</a> and the <code>quartz</code> device on macOS resolve system fonts directly.</p>
+<p><code><a href="reference/gfplot_save.html">gfplot_save()</a></code> writes a figure through a device that can render the font, chosen from the file extension:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">extrafont</span><span class="fu">::</span><span class="fu">font_import</span><span class="op">(</span><span class="op">)</span>   <span class="co"># once per machine</span></span>
-<span><span class="fu"><a href="reference/gfplot_font_setup.html">gfplot_font_setup</a></span><span class="op">(</span><span class="op">)</span>        <span class="co"># registers Arial with the graphics devices</span></span></code></pre></div>
-<p><code><a href="reference/gfplot_font_setup.html">gfplot_font_setup()</a></code> reports whether Arial is then available. Every plotting function takes <code>font</code>, so a different family can be used for a specific figure; the value is passed to the device unchanged.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="fu"><a href="reference/plot_KMCurve.html">plot_KMCurve</a></span><span class="op">(</span><span class="va">clin</span>, <span class="va">labs</span><span class="op">)</span>, <span class="st">"figure.png"</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="fu"><a href="reference/plot_KMCurve.html">plot_KMCurve</a></span><span class="op">(</span><span class="va">clin</span>, <span class="va">labs</span><span class="op">)</span>, <span class="st">"figure.pdf"</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="reference/gfplot_font_setup.html">gfplot_font_setup()</a></code> reports which routes work in the current session:</p>
+<pre><code>Figure font "Arial" can be rendered by:
+• ragg raster devices (PNG, TIFF, JPEG): yes
+• quartz (macOS PDF and screen): yes
+• base pdf(): no</code></pre>
+<p>The base <code><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf()</a></code> device keeps its own font table and is the one route that needs help. <code><a href="reference/gfplot_font_setup.html">gfplot_font_setup()</a></code> registers Arial with it through <a href="https://github.com/wch/extrafont" class="external-link">extrafont</a> when that package is installed; a one-time <code>extrafont::font_import()</code> is required before that can work. On macOS, prefer <code>gfplot_save(..., "figure.pdf")</code>, which uses <code>quartz</code> and needs none of this.</p>
+<p>Every plotting function takes <code>font</code>, so a different family can be used for a specific figure; the value is passed to the device unchanged.</p>
 <p>Figures are rendered when they are printed, so examples in the help pages assign them to <code>p</code>; call <code>print(p)</code> or <code>ggsave()</code> to produce the file.</p>
+</div>
+<div class="section level2">
+<h2 id="saving-figures">Saving figures<a class="anchor" aria-label="anchor" href="#saving-figures"></a>
+</h2>
+<p><code><a href="reference/gfplot_save.html">gfplot_save()</a></code> chooses the device from the file extension: <code>.png</code>, <code>.tiff</code>, <code>.jpg</code>, <code>.jpeg</code>, and <code>.pdf</code> are supported. Raster output goes through <code>ragg</code>, which resolves system fonts; PDF output uses <code>quartz</code> on macOS and the base device elsewhere.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/plot_ROC.html">plot_ROC</a></span><span class="op">(</span><span class="va">scores</span>, <span class="va">labels</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"roc.png"</span>, width <span class="op">=</span> <span class="fl">5</span>, height <span class="op">=</span> <span class="fl">4</span>, dpi <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="themes">Themes<a class="anchor" aria-label="anchor" href="#themes"></a>
 </h2>
 <p>Loading <code>gfplot</code> sets the global <code>ggplot2</code> theme to <code><a href="https://wilkelab.org/cowplot/reference/theme_cowplot.html" class="external-link">cowplot::theme_cowplot()</a></code>. Set the option before loading the package to keep your own theme:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>gfplot.set_theme <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gflab/gfplot" class="external-link">gfplot</a></span><span class="op">)</span></span></code></pre></div>
 </div>

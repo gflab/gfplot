@@ -52,4 +52,6 @@
 - [`get_color()`](https://gflab.github.io/gfplot/reference/get_color.md)
   : Colour palettes used by the plotting functions
 - [`gfplot_font_setup()`](https://gflab.github.io/gfplot/reference/gfplot_font_setup.md)
-  : Prepare the Arial font family for figure output
+  : Check which devices can render the figure font
+- [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md)
+  : Save a figure using a device that can render the requested font

@@ -1,5 +1,68 @@
 # Changelog
 
+## gfplot 0.3.0
+
+Modernises the package around two goals: figures come out in Arial
+without setup, and the package depends on less to maintain.
+
+### Fonts no longer need a registration step for most output
+
+In 0.2.0, writing Arial meant running `extrafont::font_import()` and
+then `extrafont::loadfonts()`. That is only needed by the base
+[`pdf()`](https://rdrr.io/r/grDevices/pdf.html) device. The raster
+devices in and the `quartz` device on macOS resolve system fonts
+directly, so PNG, TIFF, JPEG, and macOS PDF output need no preparation
+at all.
+
+- [`gfplot_font_setup()`](https://gflab.github.io/gfplot/reference/gfplot_font_setup.md)
+  now reports which routes can render the font in the current session
+  instead of only driving `extrafont`. It returns a named logical vector
+  with one entry per route that
+  [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md)
+  chooses between (`raster`, `quartz`, `pdf`) and registers the font
+  with `extrafont` when that is the only way to get vector PDF output.
+- Added
+  [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md),
+  which writes a figure through a device that can render the requested
+  font, chosen from the file extension. It closes the device even when
+  drawing fails.
+- The default figure font is still Arial, and the `font` argument is
+  still passed to the device unchanged.
+
+### Fewer dependencies
+
+- [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md)
+  no longer uses . Curves are built with , which was already a
+  dependency, so the package no longer pulls in and the `ggplot2` 4.0
+  warning that came with it.
+- [`plot_cor()`](https://gflab.github.io/gfplot/reference/plot_cor.md)
+  no longer uses .
+  [`stats::cor.test()`](https://rdrr.io/r/stats/cor.test.html) returns
+  the same Pearson correlation and p-value, including under missing
+  values, so is no longer a dependency.
+
+### Repairs
+
+- [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md)
+  reported `1 - AUC` in the legend for a marker whose direction was
+  reversed. The curve was drawn with a fixed convention while the legend
+  came from `pROC`’s automatic direction, so a marker drawn below the
+  diagonal was labelled with the mirrored value. Both now use the same
+  direction, and the legend always describes the curve that is drawn.
+- [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md)
+  reproduces the 0.1.0 appearance: axis labels `1 - Specificity` and
+  `Sensitivity`, the dashed reference diagonal, and equal coordinate
+  scaling.
+- Missing optional back ends report a formatted error that names the
+  package and the install command, through .
+
+### Tests
+
+Seventy tests, including new coverage for the direction of the plotted
+curve, `force05`, the correlation annotation under missing and
+degenerate input, and
+[`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md).
+
 ## gfplot 0.2.0
 
 Modernisation of the 0.1.0 package. Every exported function keeps its

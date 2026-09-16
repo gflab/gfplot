@@ -1,42 +1,58 @@
-# Prepare the Arial font family for figure output
+# Check which devices can render the figure font
 
-Figures produced by `gfplot` use Arial. On macOS the `quartz` device
-resolves Arial directly. PDF and PostScript output need the font to be
-registered with the device, which `extrafont` does; this function runs
-the registration and reports whether Arial is then available.
+Figures produced by `gfplot` use Arial. The raster devices supplied by
+ragg and the `quartz` device on macOS resolve system fonts such as Arial
+directly, so most output needs no preparation at all. The base
+[`pdf()`](https://rdrr.io/r/grDevices/pdf.html) device keeps its own
+font table and needs the family registered with it, which extrafont
+does.
 
 ## Usage
 
 ``` r
-gfplot_font_setup(quiet = FALSE)
+gfplot_font_setup(font = "Arial", quiet = FALSE)
 ```
 
 ## Arguments
 
+- font:
+
+  Font family to check.
+
 - quiet:
 
-  Suppress progress output.
+  Suppress the report.
 
 ## Value
 
-`TRUE` when Arial is registered for the current device, `FALSE`
-otherwise, invisibly.
+A named logical vector, invisibly, with one entry per device route:
+`raster` (ragg PNG/TIFF/JPEG), `quartz` (macOS PDF and screen), and
+`pdf` (base [`pdf()`](https://rdrr.io/r/grDevices/pdf.html)). These are
+the routes
+[`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md)
+chooses between.
 
 ## Details
 
-Run `extrafont::font_import()` once, before the first call to this
-function, to add system fonts to the `extrafont` database.
+This function reports which routes work in the current session and, when
+vector PDF output would otherwise be unavailable, registers the font
+with extrafont so that [`pdf()`](https://rdrr.io/r/grDevices/pdf.html)
+can use it.
 
 ## See also
 
+[`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md)
+to write a figure using a device that can render the font, and
 [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md)
 for the `font` argument.
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-extrafont::font_import()
 gfplot_font_setup()
-} # }
+#> Figure font "Arial" can be rendered by:
+#> • ragg raster devices (PNG, TIFF, JPEG): no
+#> • quartz (macOS PDF and screen): no
+#> • base pdf(): no
+#> ℹ gfplot_save() picks a route that can render the font.
 ```

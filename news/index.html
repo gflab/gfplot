@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,37 @@
       <small>Source: <a href="https://github.com/gflab/gfplot/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="gfplot-030">gfplot 0.3.0<a class="anchor" aria-label="anchor" href="#gfplot-030"></a></h2>
+<p>Modernises the package around two goals: figures come out in Arial without setup, and the package depends on less to maintain.</p>
+<div class="section level3">
+<h3 id="fonts-no-longer-need-a-registration-step-for-most-output-0-3-0">Fonts no longer need a registration step for most output<a class="anchor" aria-label="anchor" href="#fonts-no-longer-need-a-registration-step-for-most-output-0-3-0"></a></h3>
+<p>In 0.2.0, writing Arial meant running <code>extrafont::font_import()</code> and then <code>extrafont::loadfonts()</code>. That is only needed by the base <code><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf()</a></code> device. The raster devices in  and the <code>quartz</code> device on macOS resolve system fonts directly, so PNG, TIFF, JPEG, and macOS PDF output need no preparation at all.</p>
+<ul><li>
+<code><a href="../reference/gfplot_font_setup.html">gfplot_font_setup()</a></code> now reports which routes can render the font in the current session instead of only driving <code>extrafont</code>. It returns a named logical vector with one entry per route that <code><a href="../reference/gfplot_save.html">gfplot_save()</a></code> chooses between (<code>raster</code>, <code>quartz</code>, <code>pdf</code>) and registers the font with <code>extrafont</code> when that is the only way to get vector PDF output.</li>
+<li>Added <code><a href="../reference/gfplot_save.html">gfplot_save()</a></code>, which writes a figure through a device that can render the requested font, chosen from the file extension. It closes the device even when drawing fails.</li>
+<li>The default figure font is still Arial, and the <code>font</code> argument is still passed to the device unchanged.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fewer-dependencies-0-3-0">Fewer dependencies<a class="anchor" aria-label="anchor" href="#fewer-dependencies-0-3-0"></a></h3>
+<ul><li>
+<code><a href="../reference/plot_ROC.html">plot_ROC()</a></code> no longer uses . Curves are built with , which was already a dependency, so the package no longer pulls in  and the <code>ggplot2</code> 4.0 warning that came with it.</li>
+<li>
+<code><a href="../reference/plot_cor.html">plot_cor()</a></code> no longer uses . <code><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">stats::cor.test()</a></code> returns the same Pearson correlation and p-value, including under missing values, so  is no longer a dependency.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="repairs-0-3-0">Repairs<a class="anchor" aria-label="anchor" href="#repairs-0-3-0"></a></h3>
+<ul><li>
+<code><a href="../reference/plot_ROC.html">plot_ROC()</a></code> reported <code>1 - AUC</code> in the legend for a marker whose direction was reversed. The curve was drawn with a fixed convention while the legend came from <code>pROC</code>’s automatic direction, so a marker drawn below the diagonal was labelled with the mirrored value. Both now use the same direction, and the legend always describes the curve that is drawn.</li>
+<li>
+<code><a href="../reference/plot_ROC.html">plot_ROC()</a></code> reproduces the 0.1.0 appearance: axis labels <code>1 - Specificity</code> and <code>Sensitivity</code>, the dashed reference diagonal, and equal coordinate scaling.</li>
+<li>Missing optional back ends report a formatted error that names the package and the install command, through .</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-3-0">Tests<a class="anchor" aria-label="anchor" href="#tests-0-3-0"></a></h3>
+<p>Seventy tests, including new coverage for the direction of the plotted curve, <code>force05</code>, the correlation annotation under missing and degenerate input, and <code><a href="../reference/gfplot_save.html">gfplot_save()</a></code>.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="gfplot-020">gfplot 0.2.0<a class="anchor" aria-label="anchor" href="#gfplot-020"></a></h2>
 <p>Modernisation of the 0.1.0 package. Every exported function keeps its name and arguments, so existing scripts continue to run unchanged.</p>
