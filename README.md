@@ -3,6 +3,8 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/gflab/gfplot/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gflab/gfplot/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/gflab/gfplot/actions/workflows/pkgdown.yaml/badge.svg)](https://gflab.github.io/gfplot/)
+[![r-universe version](https://gflab.r-universe.dev/gfplot/badges/version)](https://gflab.r-universe.dev/gfplot)
+[![r-universe status](https://gflab.r-universe.dev/gfplot/badges/checks)](https://gflab.r-universe.dev/gfplot)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/gflab/gfplot/blob/master/LICENSE.md)
 <!-- badges: end -->
 
@@ -44,6 +46,18 @@ statement that this is the intended house style, and the package applies it
 consistently. See [Figure style](#figure-style) to change any part of it.
 
 ## Installation
+
+Prebuilt binaries for Linux, macOS, and Windows come from
+[r-universe](https://gflab.r-universe.dev/gfplot), so no compiler is needed:
+
+```r
+install.packages(
+  "gfplot",
+  repos = c(gflab = "https://gflab.r-universe.dev", CRAN = "https://cloud.r-project.org")
+)
+```
+
+Installing from source through GitHub also works:
 
 ```r
 # install.packages("remotes")

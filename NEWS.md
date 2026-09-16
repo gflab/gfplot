@@ -1,5 +1,9 @@
 # gfplot 0.6.0
 
+Prebuilt binaries for Linux, macOS, and Windows are now available from
+<https://gflab.r-universe.dev/gfplot>, so installing no longer needs a
+compiler. `install_github()` keeps working unchanged.
+
 Nine new figure families, journal size presets, and a provenance record. Every
 existing function keeps its name and arguments.
 
