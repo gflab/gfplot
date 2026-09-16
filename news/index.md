@@ -67,6 +67,10 @@ It is off by default so no unexpected files appear.
 
 ### Repairs
 
+- Figure categories are spelled one way, so
+  [`gfplot_families()`](https://gflab.github.io/gfplot/reference/gfplot_families.md)
+  no longer splits a category in two over capitalisation or lists
+  survival figures under both “Survival” and “Time-to-Event”.
 - `gfplot_response_colors()` errored on a response category it did not
   know, which broke
   [`plot_waterfall()`](https://gflab.github.io/gfplot/reference/plot_waterfall.md)
