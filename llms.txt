@@ -294,7 +294,12 @@ site](https://gflab.github.io/gfplot/).
 
 ## License
 
-MIT. See [LICENSE](https://gflab.github.io/gfplot/LICENSE).
+Apache License 2.0. See
+[LICENSE.md](https://gflab.github.io/gfplot/LICENSE.md). Copyright 2026
+FengGao Lab contributors.
+
+Versions before `0.4.1` were released under the MIT licence; those tags
+keep the terms they were published with.
 
 # Package index
 
