@@ -111,9 +111,28 @@ library(gfplot)
 
 `0.2.0` modernises the package: it repairs functions that could not run,
 fixes undeclared dependencies, and adds tests and continuous
-integration. See `NEWS.md` for the full list. The original `0.1.0`
-sources remain available in this repository’s history at commit
-`89a60bd`, which is tagged `v0.1.0`.
+integration. See `NEWS.md` for the full list. Both `0.1.0` and `0.2.0`
+are tagged, so a specific state can be pinned.
+
+## Provenance
+
+`gfplot` was published first at `gaofeng21cn/gfplot` and later at
+`gflab/gfplot`. The repository was deleted in August 2026. Other public
+research code still installed it — `LidocaineQ/PIANOS` calls
+`devtools::install_github("gflab/gfplot")` in its README and notebooks —
+so those install commands became dead links.
+
+The package was restored in September 2026 from a verified `git bundle`
+of the full history. The recovered commit `89a60bdb` carries the
+original `0.1.0` sources unchanged and is tagged `v0.1.0`; `v0.2.0` adds
+the modernisation on top. The repository moved to the `gflab`
+organisation, which is why the personal path redirects here and both
+install commands resolve to the same commit.
+
+Every exported function keeps its `0.1.0` name and arguments, so
+existing calls continue to work without edits. If you are reading this
+because an install failed in that window, the package is installable
+again and no change to your code is required.
 
 ## License and citation
 

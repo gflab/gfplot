@@ -202,7 +202,14 @@
 <div class="section level2">
 <h2 id="version-history">Version history<a class="anchor" aria-label="anchor" href="#version-history"></a>
 </h2>
-<p><code>0.2.0</code> modernises the package: it repairs functions that could not run, fixes undeclared dependencies, and adds tests and continuous integration. See <code>NEWS.md</code> for the full list. The original <code>0.1.0</code> sources remain available in this repository’s history at commit <code>89a60bd</code>, which is tagged <code>v0.1.0</code>.</p>
+<p><code>0.2.0</code> modernises the package: it repairs functions that could not run, fixes undeclared dependencies, and adds tests and continuous integration. See <code>NEWS.md</code> for the full list. Both <code>0.1.0</code> and <code>0.2.0</code> are tagged, so a specific state can be pinned.</p>
+</div>
+<div class="section level2">
+<h2 id="provenance">Provenance<a class="anchor" aria-label="anchor" href="#provenance"></a>
+</h2>
+<p><code>gfplot</code> was published first at <code>gaofeng21cn/gfplot</code> and later at <code>gflab/gfplot</code>. The repository was deleted in August 2026. Other public research code still installed it — <code>LidocaineQ/PIANOS</code> calls <code>devtools::install_github("gflab/gfplot")</code> in its README and notebooks — so those install commands became dead links.</p>
+<p>The package was restored in September 2026 from a verified <code>git bundle</code> of the full history. The recovered commit <code>89a60bdb</code> carries the original <code>0.1.0</code> sources unchanged and is tagged <code>v0.1.0</code>; <code>v0.2.0</code> adds the modernisation on top. The repository moved to the <code>gflab</code> organisation, which is why the personal path redirects here and both install commands resolve to the same commit.</p>
+<p>Every exported function keeps its <code>0.1.0</code> name and arguments, so existing calls continue to work without edits. If you are reading this because an install failed in that window, the package is installable again and no change to your code is required.</p>
 </div>
 <div class="section level2">
 <h2 id="license-and-citation">License and citation<a class="anchor" aria-label="anchor" href="#license-and-citation"></a>
