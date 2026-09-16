@@ -123,10 +123,15 @@ Every function returns a `ggplot` object.
 |----|----|
 | Survival | [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md), [`generate_time_event()`](https://gflab.github.io/gfplot/reference/generate_time_event.md) |
 | Discrimination | [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md), [`plot_TimeROC()`](https://gflab.github.io/gfplot/reference/plot_TimeROC.md), [`plot_MulROC()`](https://gflab.github.io/gfplot/reference/plot_MulROC.md) |
+| Effect estimates | [`plot_forest()`](https://gflab.github.io/gfplot/reference/plot_forest.md) |
 | Sample-level figures | [`plot_RiskScore()`](https://gflab.github.io/gfplot/reference/plot_RiskScore.md), [`plot_Boxplot()`](https://gflab.github.io/gfplot/reference/plot_Boxplot.md), [`plot_barplot()`](https://gflab.github.io/gfplot/reference/plot_barplot.md), [`plot_cor()`](https://gflab.github.io/gfplot/reference/plot_cor.md) |
 | Projections and models | [`plot_PCA()`](https://gflab.github.io/gfplot/reference/plot_PCA.md), [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md), [`plot_lasso()`](https://gflab.github.io/gfplot/reference/plot_lasso.md) |
 | Enrichment and immune figures | [`plot_GO()`](https://gflab.github.io/gfplot/reference/plot_GO.md), [`viewGSEA()`](https://gflab.github.io/gfplot/reference/viewGSEA.md), [`ggGSEA()`](https://gflab.github.io/gfplot/reference/ggGSEA.md), [`plot_immune()`](https://gflab.github.io/gfplot/reference/plot_immune.md) |
 | Style and output | [`get_color()`](https://gflab.github.io/gfplot/reference/get_color.md), [`gfplot_save()`](https://gflab.github.io/gfplot/reference/gfplot_save.md), [`gfplot_font_setup()`](https://gflab.github.io/gfplot/reference/gfplot_font_setup.md) |
+
+[`gfplot_families()`](https://gflab.github.io/gfplot/reference/gfplot_families.md)
+lists every figure the package can draw, with its category and an
+example call.
 
 Notable arguments:
 
@@ -139,6 +144,58 @@ Notable arguments:
 | [`plot_ROC()`](https://gflab.github.io/gfplot/reference/plot_ROC.md) | `percent.style` | Label axes as percentages |
 | [`plot_UMAP()`](https://gflab.github.io/gfplot/reference/plot_UMAP.md), [`plot_PCA()`](https://gflab.github.io/gfplot/reference/plot_PCA.md) | `palette` | Choose the group colours |
 | every plot | `font` | Override the typeface for one figure |
+
+## Forest plots
+
+[`plot_forest()`](https://gflab.github.io/gfplot/reference/plot_forest.md)
+draws hazard ratios, odds ratios, or mean differences with their
+confidence intervals and the numbers alongside. It reads a `clinstats`
+regression table directly, so a result goes from model to figure without
+reshaping:
+
+``` r
+
+library(clinstats)
+
+table <- cox_table(
+  clin_crc,
+  time = "rfs.delay", event = "rfs.event",
+  factors = c("sex", "age", "tnm.stage"), multivariable = "none"
+)
+
+plot_forest(
+  table,
+  term = "term", estimate = "hr_univariable",
+  lower = "univ_ci_lower", upper = "univ_ci_upper", p = "univ_p",
+  log_scale = TRUE, title = "Overall survival (univariable)"
+)
+```
+
+Ratios use a log axis, where a halving and a doubling are the same
+distance. Pass `log_scale = FALSE` for an effect measured as a
+difference, which may legitimately cross zero.
+
+## Programmatic use
+
+A figure can also be described as a value and drawn later, which is what
+a pipeline or an agent needs when the numbers and the chart are decided
+in different places:
+
+``` r
+
+spec <- gfplot_spec(
+  "forest",
+  data = table, term = "term",
+  estimate = "hr_univariable",
+  lower = "univ_ci_lower", upper = "univ_ci_upper",
+  p = "univ_p", log_scale = TRUE
+)
+
+gfplot_save(gfplot_render(spec), "figure2.png", width = 7, height = 4)
+```
+
+[`gfplot_families()`](https://gflab.github.io/gfplot/reference/gfplot_families.md)
+lists every figure the package can draw and how to call it.
 
 ## Save a figure
 

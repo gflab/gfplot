@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,9 +29,51 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/gflab/gfplot/blob/v0.4.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/gflab/gfplot/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="gfplot-050">gfplot 0.5.0<a class="anchor" aria-label="anchor" href="#gfplot-050"></a></h2>
+<p>Adds a figure-specification layer and the first new figure family, forest plots. Every existing function keeps its name and arguments.</p>
+<div class="section level3">
+<h3 id="figure-specifications-0-5-0">Figure specifications<a class="anchor" aria-label="anchor" href="#figure-specifications-0-5-0"></a></h3>
+<p><code><a href="../reference/gfplot_spec.html">gfplot_spec()</a></code> captures the data and settings for a figure as a value that can be validated, printed, and rendered later, and <code><a href="../reference/gfplot_render.html">gfplot_render()</a></code> draws it. This is the entry point for a pipeline, a report template, or an agent that has the numbers and a description of the chart it wants in one place but draws in another.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gfplot_spec.html">gfplot_spec</a></span><span class="op">(</span></span>
+<span>  <span class="st">"forest"</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">effects</span>, term <span class="op">=</span> <span class="st">"term"</span>,</span>
+<span>  estimate <span class="op">=</span> <span class="st">"hr"</span>, lower <span class="op">=</span> <span class="st">"lower"</span>, upper <span class="op">=</span> <span class="st">"upper"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gfplot_render.html">gfplot_render</a></span><span class="op">(</span><span class="va">spec</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="../reference/gfplot_families.html">gfplot_families()</a></code> indexes every figure the package can draw — both the specification-driven families and the existing functions — with its category and an example call.</p>
+</div>
+<div class="section level3">
+<h3 id="forest-plots-0-5-0">Forest plots<a class="anchor" aria-label="anchor" href="#forest-plots-0-5-0"></a></h3>
+<p><code><a href="../reference/plot_forest.html">plot_forest()</a></code> draws effect estimates with confidence intervals, the numbers printed alongside, optional grouping, and optional log scaling for ratios. It reads a <code>clinstats</code> regression table without reshaping:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu">clinstats</span><span class="fu">::</span><span class="fu">cox_table</span><span class="op">(</span></span>
+<span>  <span class="fu">clinstats</span><span class="fu">::</span><span class="va">clin_crc</span>,</span>
+<span>  time <span class="op">=</span> <span class="st">"rfs.delay"</span>, event <span class="op">=</span> <span class="st">"rfs.event"</span>,</span>
+<span>  factors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sex"</span>, <span class="st">"age"</span>, <span class="st">"tnm.stage"</span><span class="op">)</span>, multivariable <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span></span>
+<span>  <span class="va">table</span>,</span>
+<span>  term <span class="op">=</span> <span class="st">"term"</span>, estimate <span class="op">=</span> <span class="st">"hr_univariable"</span>,</span>
+<span>  lower <span class="op">=</span> <span class="st">"univ_ci_lower"</span>, upper <span class="op">=</span> <span class="st">"univ_ci_upper"</span>, p <span class="op">=</span> <span class="st">"univ_p"</span>,</span>
+<span>  log_scale <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><code>clinstats</code> is listed in <code>Suggests</code>, so it is only needed by that example and the integration test.</p>
+</div>
+<div class="section level3">
+<h3 id="notes-0-5-0">Notes<a class="anchor" aria-label="anchor" href="#notes-0-5-0"></a></h3>
+<ul><li>The number column is a composed panel, as with the risk table of <code><a href="../reference/plot_KMCurve.html">plot_KMCurve()</a></code>, so it lines up with the rows at any figure size.</li>
+<li>Ratios use a log axis, where a halving and a doubling are the same distance; differences use a linear axis. A log axis with non-positive limits is rejected with an explanation rather than drawn.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-0-5-0">Tests<a class="anchor" aria-label="anchor" href="#tests-0-5-0"></a></h3>
+<p>One hundred and sixty-five tests, adding coverage for the specification layer, the forest plot across both scales, grouped and ungrouped layouts, input validation, and the <code>clinstats</code> integration.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.1" id="gfplot-041">gfplot 0.4.1<a class="anchor" aria-label="anchor" href="#gfplot-041"></a></h2>
 <ul><li>Relicensed from MIT to the Apache License 2.0, the default for lab open-source software. The R package metadata, <code>CITATION.cff</code>, and the README all report the new licence.</li>

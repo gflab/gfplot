@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">gfplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,6 +157,10 @@
 </td>
 </tr>
 <tr>
+<td>Effect estimates</td>
+<td><code><a href="reference/plot_forest.html">plot_forest()</a></code></td>
+</tr>
+<tr>
 <td>Sample-level figures</td>
 <td>
 <code><a href="reference/plot_RiskScore.html">plot_RiskScore()</a></code>, <code><a href="reference/plot_Boxplot.html">plot_Boxplot()</a></code>, <code><a href="reference/plot_barplot.html">plot_barplot()</a></code>, <code><a href="reference/plot_cor.html">plot_cor()</a></code>
@@ -182,6 +186,7 @@
 </tr>
 </tbody>
 </table>
+<p><code><a href="reference/gfplot_families.html">gfplot_families()</a></code> lists every figure the package can draw, with its category and an example call.</p>
 <p>Notable arguments:</p>
 <table class="table">
 <thead><tr>
@@ -231,10 +236,47 @@
 </table>
 </div>
 <div class="section level2">
+<h2 id="forest-plots">Forest plots<a class="anchor" aria-label="anchor" href="#forest-plots"></a>
+</h2>
+<p><code><a href="reference/plot_forest.html">plot_forest()</a></code> draws hazard ratios, odds ratios, or mean differences with their confidence intervals and the numbers alongside. It reads a <code>clinstats</code> regression table directly, so a result goes from model to figure without reshaping:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">clinstats</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">table</span> <span class="op">&lt;-</span> <span class="fu">cox_table</span><span class="op">(</span></span>
+<span>  <span class="va">clin_crc</span>,</span>
+<span>  time <span class="op">=</span> <span class="st">"rfs.delay"</span>, event <span class="op">=</span> <span class="st">"rfs.event"</span>,</span>
+<span>  factors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sex"</span>, <span class="st">"age"</span>, <span class="st">"tnm.stage"</span><span class="op">)</span>, multivariable <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/plot_forest.html">plot_forest</a></span><span class="op">(</span></span>
+<span>  <span class="va">table</span>,</span>
+<span>  term <span class="op">=</span> <span class="st">"term"</span>, estimate <span class="op">=</span> <span class="st">"hr_univariable"</span>,</span>
+<span>  lower <span class="op">=</span> <span class="st">"univ_ci_lower"</span>, upper <span class="op">=</span> <span class="st">"univ_ci_upper"</span>, p <span class="op">=</span> <span class="st">"univ_p"</span>,</span>
+<span>  log_scale <span class="op">=</span> <span class="cn">TRUE</span>, title <span class="op">=</span> <span class="st">"Overall survival (univariable)"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Ratios use a log axis, where a halving and a doubling are the same distance. Pass <code>log_scale = FALSE</code> for an effect measured as a difference, which may legitimately cross zero.</p>
+</div>
+<div class="section level2">
+<h2 id="programmatic-use">Programmatic use<a class="anchor" aria-label="anchor" href="#programmatic-use"></a>
+</h2>
+<p>A figure can also be described as a value and drawn later, which is what a pipeline or an agent needs when the numbers and the chart are decided in different places:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gfplot_spec.html">gfplot_spec</a></span><span class="op">(</span></span>
+<span>  <span class="st">"forest"</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">table</span>, term <span class="op">=</span> <span class="st">"term"</span>,</span>
+<span>  estimate <span class="op">=</span> <span class="st">"hr_univariable"</span>,</span>
+<span>  lower <span class="op">=</span> <span class="st">"univ_ci_lower"</span>, upper <span class="op">=</span> <span class="st">"univ_ci_upper"</span>,</span>
+<span>  p <span class="op">=</span> <span class="st">"univ_p"</span>, log_scale <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="fu"><a href="reference/gfplot_render.html">gfplot_render</a></span><span class="op">(</span><span class="va">spec</span><span class="op">)</span>, <span class="st">"figure2.png"</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="reference/gfplot_families.html">gfplot_families()</a></code> lists every figure the package can draw and how to call it.</p>
+</div>
+<div class="section level2">
 <h2 id="save-a-figure">Save a figure<a class="anchor" aria-label="anchor" href="#save-a-figure"></a>
 </h2>
 <p><code><a href="reference/gfplot_save.html">gfplot_save()</a></code> writes a file through a graphics device that can render the figure font, chosen from the file extension. <code>.png</code>, <code>.tiff</code>, <code>.jpg</code>, and <code>.pdf</code> are supported.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"figure1.png"</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5</span>, dpi <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/gfplot_save.html">gfplot_save</a></span><span class="op">(</span><span class="va">p</span>, <span class="st">"figure1.pdf"</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <p>Figures are drawn when they are printed, so a plot object is only turned into a file by <code><a href="reference/gfplot_save.html">gfplot_save()</a></code>, <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, or <code>ggsave()</code>.</p>
@@ -244,7 +286,7 @@
 </h2>
 <p>Figures use Arial, which is what journals ask for. Most output needs no preparation: the raster devices in <a href="https://ragg.r-lib.org/" class="external-link">ragg</a> and the <code>quartz</code> device on macOS resolve system fonts directly.</p>
 <p>The base <code><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf()</a></code> device keeps its own font table and is the one route that needs help. <code><a href="reference/gfplot_font_setup.html">gfplot_font_setup()</a></code> reports the state of every route and registers Arial with <code><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf()</a></code> through <a href="https://github.com/wch/extrafont" class="external-link">extrafont</a> when it is installed:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/gfplot_font_setup.html">gfplot_font_setup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Figure font "Arial" can be rendered by:</span></span>
 <span><span class="co">#&gt; • ragg raster devices (PNG, TIFF, JPEG): yes</span></span>
@@ -282,7 +324,7 @@
 </tbody>
 </table>
 <p>Colours are addressed by role rather than by hex value, so a figure states what a colour is for:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/gfplot_colors.html">gfplot_colors</a></span><span class="op">(</span><span class="st">"primary"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   primary</span></span>
 <span><span class="co">#&gt; "#0B4F6C"</span></span>
@@ -292,10 +334,10 @@
 <span><span class="co">#&gt;        "#0B4F6C"        "#2A9D8F"</span></span></code></pre></div>
 <p>Risk-group labels are matched by meaning, not spelling, so “Low Risk”, “low-risk”, and “low risk” all take the model-curve colour.</p>
 <p>Retune the whole suite for a session by overriding a role; no figure code changes:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>gfplot.palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>primary <span class="op">=</span> <span class="st">"#123456"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Each part can also be changed for a single figure:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># A larger base size for a figure that will be printed small</span></span>
 <span><span class="fu"><a href="reference/plot_KMCurve.html">plot_KMCurve</a></span><span class="op">(</span><span class="va">clin</span>, <span class="va">labels</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="reference/gfplot_theme.html">gfplot_theme</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
 <span></span>
@@ -375,7 +417,7 @@
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"gfplot"</span><span class="op">)</span></span></code></pre></div>
 <p>See <code>CITATION.cff</code> for machine-readable metadata. Both <code>v0.1.0</code> and <code>v0.3.0</code> are tagged, so a specific state can be pinned.</p>
 </div>

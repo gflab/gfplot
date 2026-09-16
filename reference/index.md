@@ -16,6 +16,20 @@
 - [`plot_MulROC()`](https://gflab.github.io/gfplot/reference/plot_MulROC.md)
   : Plot several ROC curves from separate datasets
 
+## Effect estimates
+
+- [`plot_forest()`](https://gflab.github.io/gfplot/reference/plot_forest.md)
+  : Forest plot of effect estimates
+
+## Figure specifications
+
+- [`gfplot_spec()`](https://gflab.github.io/gfplot/reference/gfplot_spec.md)
+  : Build a figure specification
+- [`gfplot_render()`](https://gflab.github.io/gfplot/reference/gfplot_render.md)
+  : Draw a figure from a specification
+- [`gfplot_families()`](https://gflab.github.io/gfplot/reference/gfplot_families.md)
+  : List the figures gfplot can draw
+
 ## Sample-level figures
 
 - [`plot_RiskScore()`](https://gflab.github.io/gfplot/reference/plot_RiskScore.md)

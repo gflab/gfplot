@@ -1,5 +1,75 @@
 # Changelog
 
+## gfplot 0.5.0
+
+Adds a figure-specification layer and the first new figure family,
+forest plots. Every existing function keeps its name and arguments.
+
+### Figure specifications
+
+[`gfplot_spec()`](https://gflab.github.io/gfplot/reference/gfplot_spec.md)
+captures the data and settings for a figure as a value that can be
+validated, printed, and rendered later, and
+[`gfplot_render()`](https://gflab.github.io/gfplot/reference/gfplot_render.md)
+draws it. This is the entry point for a pipeline, a report template, or
+an agent that has the numbers and a description of the chart it wants in
+one place but draws in another.
+
+``` r
+
+spec <- gfplot_spec(
+  "forest",
+  data = effects, term = "term",
+  estimate = "hr", lower = "lower", upper = "upper"
+)
+gfplot_render(spec)
+```
+
+[`gfplot_families()`](https://gflab.github.io/gfplot/reference/gfplot_families.md)
+indexes every figure the package can draw — both the
+specification-driven families and the existing functions — with its
+category and an example call.
+
+### Forest plots
+
+[`plot_forest()`](https://gflab.github.io/gfplot/reference/plot_forest.md)
+draws effect estimates with confidence intervals, the numbers printed
+alongside, optional grouping, and optional log scaling for ratios. It
+reads a `clinstats` regression table without reshaping:
+
+``` r
+
+table <- clinstats::cox_table(
+  clinstats::clin_crc,
+  time = "rfs.delay", event = "rfs.event",
+  factors = c("sex", "age", "tnm.stage"), multivariable = "none"
+)
+plot_forest(
+  table,
+  term = "term", estimate = "hr_univariable",
+  lower = "univ_ci_lower", upper = "univ_ci_upper", p = "univ_p",
+  log_scale = TRUE
+)
+```
+
+`clinstats` is listed in `Suggests`, so it is only needed by that
+example and the integration test.
+
+### Notes
+
+- The number column is a composed panel, as with the risk table of
+  [`plot_KMCurve()`](https://gflab.github.io/gfplot/reference/plot_KMCurve.md),
+  so it lines up with the rows at any figure size.
+- Ratios use a log axis, where a halving and a doubling are the same
+  distance; differences use a linear axis. A log axis with non-positive
+  limits is rejected with an explanation rather than drawn.
+
+### Tests
+
+One hundred and sixty-five tests, adding coverage for the specification
+layer, the forest plot across both scales, grouped and ungrouped
+layouts, input validation, and the `clinstats` integration.
+
 ## gfplot 0.4.1
 
 - Relicensed from MIT to the Apache License 2.0, the default for lab

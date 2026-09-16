@@ -8,9 +8,12 @@
 <url><loc>https://gflab.github.io/gfplot/reference/get_color.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/gfplot-package.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/gfplot_colors.html</loc></url>
+<url><loc>https://gflab.github.io/gfplot/reference/gfplot_families.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/gfplot_font_setup.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/gfplot_legend.html</loc></url>
+<url><loc>https://gflab.github.io/gfplot/reference/gfplot_render.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/gfplot_save.html</loc></url>
+<url><loc>https://gflab.github.io/gfplot/reference/gfplot_spec.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/gfplot_theme.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/ggGSEA.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/index.html</loc></url>
@@ -25,6 +28,7 @@
 <url><loc>https://gflab.github.io/gfplot/reference/plot_UMAP.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/plot_barplot.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/plot_cor.html</loc></url>
+<url><loc>https://gflab.github.io/gfplot/reference/plot_forest.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/plot_immune.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/plot_lasso.html</loc></url>
 <url><loc>https://gflab.github.io/gfplot/reference/viewGSEA.html</loc></url>
